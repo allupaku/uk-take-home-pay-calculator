@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UK Take Home Pay Calculator</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23223136'/%3E%3Cpath d='M4 8h8M8 4v8' stroke='%23b27a2c' stroke-width='2'/%3E%3C/svg%3E" />
   <style>
     :root {
       --ink: #172024;
@@ -120,6 +121,81 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+    }
+
+    .session-history {
+      width: 100%;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      margin-top: 2px;
+    }
+
+    .session-history-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .session-history-list {
+      display: grid;
+      gap: 6px;
+      max-height: calc(100vh - 178px);
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .session-card {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-left: 3px solid transparent;
+      background: #fff;
+      padding: 8px;
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .session-card:hover {
+      background: #f7faf8;
+      border-left-color: #c7d1d3;
+    }
+
+    .session-card.active {
+      background: #fff8e8;
+      border-color: #dfc389;
+      border-left-color: var(--accent);
+    }
+
+    .session-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .session-card-key {
+      color: var(--primary);
+      font-size: 12px;
+    }
+
+    .session-card-pay {
+      color: var(--ink);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .session-card-detail,
+    .session-empty {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     button {
@@ -560,8 +636,135 @@
       color: var(--primary-2);
     }
 
+    .print-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .print-report {
+      display: none;
+      gap: 12px;
+    }
+
+    .report-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      padding: 10px 0;
+      border-top: 2px solid var(--primary);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .report-header h3 {
+      margin: 0 0 4px;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .report-meta {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .report-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .hmrc-table th:nth-child(1) {
+      width: 120px;
+    }
+
+    .hmrc-table th:nth-child(3) {
+      width: 150px;
+    }
+
+    .payslip-report-section {
+      display: none;
+    }
+
+    .table-action {
+      min-height: 28px;
+      padding: 5px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
     .drawer-overlay {
       display: none;
+    }
+
+    .history-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(92vw, 430px);
+      min-width: 0;
+      padding: 14px;
+      overflow-y: auto;
+      background: #fff;
+      border-left: 1px solid var(--line);
+      box-shadow: -18px 0 32px rgba(23, 32, 36, 0.22);
+      transform: translateX(100%);
+      transition: transform 180ms ease;
+    }
+
+    body.drawer-history-open .history-drawer {
+      transform: translateX(0);
+    }
+
+    body.drawer-history-open {
+      overflow: hidden;
+    }
+
+    body.drawer-history-open .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: block;
+      background: rgba(23, 32, 36, 0.38);
+    }
+
+    .history-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .history-drawer-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .history-drawer-actions button {
+      width: 100%;
+    }
+
+    .history-drawer-header button {
+      width: auto;
     }
 
     @media (max-width: 1050px) {
@@ -671,12 +874,14 @@
       }
 
       body.drawer-inputs-open,
-      body.drawer-session-open {
+      body.drawer-session-open,
+      body.drawer-history-open {
         overflow: hidden;
       }
 
       body.drawer-inputs-open .drawer-overlay,
-      body.drawer-session-open .drawer-overlay {
+      body.drawer-session-open .drawer-overlay,
+      body.drawer-history-open .drawer-overlay {
         position: fixed;
         inset: 0;
         z-index: 50;
@@ -696,6 +901,123 @@
 
       table {
         font-size: 12px;
+      }
+
+      .report-header,
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-meta {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      @page {
+        margin: 12mm;
+      }
+
+      html,
+      body {
+        overflow: visible !important;
+        max-width: none;
+        background: #fff;
+      }
+
+      body {
+        color: #111;
+        font-size: 10.5px;
+        line-height: 1.25;
+      }
+
+      header,
+      .toolbar,
+      .mobile-actionbar,
+      .inputs-panel,
+      .drawer-overlay,
+      .history-drawer,
+      .print-actions,
+      .summary-panel .panel-body > *:not(.print-report-section) {
+        display: none !important;
+      }
+
+      .app,
+      .panel-body {
+        padding: 0;
+      }
+
+      .grid {
+        display: block;
+      }
+
+      .summary-panel,
+      .subsection,
+      .print-report-section {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .summary-panel > .panel-title {
+        display: none;
+      }
+
+      .print-report {
+        display: block;
+      }
+
+      .print-report > * {
+        margin-bottom: 10px;
+      }
+
+      .report-header {
+        break-inside: avoid;
+        padding: 0 0 8px;
+      }
+
+      .report-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .payslip-report-section {
+        display: none !important;
+      }
+
+      body.print-payslip .annual-report-content,
+      body.print-payslip .hmrc-report-content {
+        display: none !important;
+      }
+
+      body.print-payslip .payslip-report-section {
+        display: block !important;
+      }
+
+      table {
+        font-size: 9.5px;
+        page-break-inside: auto;
+      }
+
+      tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      th,
+      td {
+        padding: 4px 5px;
+      }
+
+      th {
+        background: #f1f3f3 !important;
+        color: #111 !important;
+      }
+
+      .notice {
+        background: #fff !important;
       }
     }
   </style>
@@ -723,6 +1045,7 @@
         <button id="new-session" type="button">New Session</button>
         <button id="copy-link" type="button">Copy Link</button>
         <button id="clear-saved" class="secondary" type="button">Clear Key</button>
+        <button id="open-history" class="secondary" type="button">Saved Sessions</button>
         <button id="reset" class="secondary" type="button">Reset</button>
       </div>
       <div id="storageStatus" class="note">Session inputs save in this browser tab.</div>
@@ -985,10 +1308,85 @@
                   <th class="num">Deductions</th>
                   <th class="num">Stock value</th>
                   <th class="num">Net</th>
+                  <th>Statement</th>
                 </tr>
               </thead>
               <tbody id="cashflowRows"></tbody>
             </table>
+          </div>
+
+          <div id="printReportSection" class="subsection print-report-section">
+            <h3>Printable Report</h3>
+            <div class="print-actions">
+              <button id="print-summary" type="button">Print Summary</button>
+              <span class="small">Use the row buttons in the monthly cashflow table to print a payslip-style statement for that month.</span>
+            </div>
+            <div id="printReport" class="print-report">
+              <div class="report-header">
+                <div>
+                  <h3>UK Take Home Pay Estimate</h3>
+                  <p class="report-note">Personal planning report. Figures are estimates from the inputs on this page and are not legal, tax, payroll, pension, or financial advice.</p>
+                </div>
+                <div class="report-meta">
+                  <div id="reportDate">Generated today</div>
+                  <div id="reportSession">Session -</div>
+                </div>
+              </div>
+
+              <div class="report-grid annual-report-content">
+                <div>
+                  <h3>Annual Summary</h3>
+                  <table>
+                    <tbody id="reportAnnualRows"></tbody>
+                  </table>
+                </div>
+                <div>
+                  <h3>Tax and NI Summary</h3>
+                  <table>
+                    <tbody id="reportTaxRows"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="hmrc-report-content">
+                <h3>HMRC Filing Guide</h3>
+                <p class="report-note">Use official HMRC forms and statements as the final source. Do not duplicate stock or benefit amounts already included on your P60/P45 or payrolled through PAYE.</p>
+                <table class="hmrc-table">
+                  <thead>
+                    <tr>
+                      <th>Reference</th>
+                      <th>What to reconcile</th>
+                      <th class="num">Estimate</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody id="hmrcRows"></tbody>
+                </table>
+              </div>
+
+              <div class="payslip-report-section">
+                <h3 id="payslipTitle">Payslip Estimate</h3>
+                <p class="report-note">This is a month-level estimate, not an employer payslip. Stock events and taxable benefits are allocated across the modelled months.</p>
+                <div class="report-grid">
+                  <div>
+                    <h3>Earnings and Taxable Items</h3>
+                    <table>
+                      <tbody id="payslipEarningsRows"></tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <h3>Deductions</h3>
+                    <table>
+                      <tbody id="payslipDeductionRows"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <h3>Payslip Summary</h3>
+                <table>
+                  <tbody id="payslipSummaryRows"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
           <div class="subsection">
@@ -1051,11 +1449,29 @@
               <li><a href="https://www.gov.uk/guidance/paying-your-employees-expenses-and-benefits-through-your-payroll">GOV.UK payrolling benefits and expenses</a></li>
               <li><a href="https://www.gov.uk/hmrc-internal-manuals/employment-related-securities/ersm170020">HMRC employment-related securities PAYE</a></li>
               <li><a href="https://www.gov.uk/hmrc-internal-manuals/employment-related-securities/ersm170700">HMRC employment-related securities NICs</a></li>
+              <li><a href="https://www.gov.uk/government/publications/self-assessment-employment-sa102">GOV.UK Self Assessment employment pages (SA102)</a></li>
+              <li><a href="https://www.gov.uk/government/publications/self-assessment-additional-information-sa101">GOV.UK Self Assessment additional information pages (SA101)</a></li>
             </ul>
           </div>
         </div>
       </section>
     </div>
+    <aside id="historyDrawer" class="history-drawer" aria-label="Saved sessions">
+      <div class="history-drawer-header">
+        <h2>Saved Sessions</h2>
+        <button id="close-history" class="secondary" type="button">Close</button>
+      </div>
+      <div class="session-history">
+        <div class="session-history-title">
+          <span>Session History</span>
+          <span id="sessionHistoryCount">0 saved</span>
+        </div>
+        <div id="sessionHistoryList" class="session-history-list"></div>
+      </div>
+      <div class="history-drawer-actions">
+        <button id="clear-all-sessions" class="secondary" type="button">Clear All Sessions</button>
+      </div>
+    </aside>
     <div id="drawerOverlay" class="drawer-overlay" aria-hidden="true"></div>
   </main>
 
@@ -1101,6 +1517,53 @@
     const sessionPayloadPrefix = "ukTakeHomePayCalculator.session.";
     const maxSessionKeys = 10;
     let activeSessionKey = "";
+    let selectedPayslipMonthIndex = 0;
+
+    const defaultInputValues = {
+      baseSalary: 0,
+      carAllowanceMonthly: 0,
+      targetBonusPct: 0,
+      pensionPct: 0,
+      employerPensionPct: 0,
+      employerPensionAnnual: 0,
+      otherTaxableCash: 0,
+      otherTaxFreeCash: 0,
+      otherPreTaxDeductions: 0,
+      otherPostTaxDeductions: 0,
+      studentLoanDeductions: 0,
+      privateHealthBikAnnual: 0,
+      privateHealthMonths: 12,
+      dentalEmployeeMonthly: 0,
+      dentalMonths: 12,
+      dentalEmployerBikAnnual: 0,
+      gymflexBikAnnual: 0,
+      gymflexSacrificeMonthly: 0,
+      gymflexMonths: 12,
+      otherBikAnnual: 0,
+      rsuVestUsd: 0,
+      rsuVests: 4,
+      rsuFx: 1.25,
+      otherRsuDeductions: 0,
+      esppContributionPct: 0,
+      esppPeriods: 2,
+      esppDiscountPct: 15,
+      esppStartFmv: 0,
+      esppPurchaseFmv: 0,
+      esppFx: 1.25
+    };
+
+    const defaultCheckboxValues = {
+      pensionReducesTax: true,
+      pensionReducesNI: true,
+      rsuNiApplies: true,
+      esppTaxApplies: true,
+      esppNiApplies: true,
+      showPensionSensitivity: false
+    };
+
+    const defaultSelectValues = {
+      chartGrouping: "monthly"
+    };
 
     const monthLabels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
 
@@ -1348,18 +1811,28 @@
 
       const stockAdjustedIncome = adjustedIncome + esppTaxableForIncome + rsuGrossGbp;
       const stockTax = incomeTax(stockAdjustedIncome, 0);
+      const totalIncomeTax = taxWithManual + esppIncomeTax + rsuIncomeTax;
+      const totalEmployeeNi = regularNi + esppNi + rsuNi;
+      const totalTaxAndNi = totalIncomeTax + totalEmployeeNi;
 
       return {
         bonus,
+        carAnnual,
         grossCash,
         taxableCash,
+        taxFreeCash: data.otherTaxFreeCash,
         pension,
         employerPension,
         totalPensionAdded,
+        privateBik,
+        dentalEmployerBik,
+        gymflexBik,
+        gymflexSacrifice,
         totalBik,
         preTaxDeductions,
         adjustedIncome,
         regularTax,
+        taxWithManual,
         regularNi,
         niablePay,
         dentalEmployeeDeduction,
@@ -1390,6 +1863,9 @@
         stockAdjustedIncome,
         stockTax,
         stockTaxBeforeManual: stockTax.taxBeforeManual,
+        totalIncomeTax,
+        totalEmployeeNi,
+        totalTaxAndNi,
         postTaxDeductions
       };
     }
@@ -1553,7 +2029,7 @@
         const label = groupSize === 1
           ? slice[0].label
           : `${slice[0].label}-${slice[slice.length - 1].label}`;
-        const item = { label, net: 0 };
+        const item = { label, net: 0, monthIndex: groupSize === 1 ? index : null };
         chartComponents.forEach((component) => {
           item[component.key] = slice.reduce((sum, rowItem) => sum + rowItem[component.key], 0);
         });
@@ -1568,13 +2044,17 @@
         const taxNi = period.incomeTax + period.employeeNi;
         const deductions = period.pension + period.esppContribution + period.deductions;
         const stockValue = period.rsuGross + period.esppStockValue;
+        const statementCell = Number.isInteger(period.monthIndex)
+          ? `<button class="secondary table-action print-payslip-row" type="button" data-month-index="${period.monthIndex}">Print</button>`
+          : `<span class="small">Monthly only</span>`;
         return row([
           td(period.label),
           td(money(period.grossCash), "num"),
           td(money(taxNi), "num"),
           td(money(deductions), "num"),
           td(money(stockValue), "num"),
-          td(money(period.net), "num")
+          td(money(period.net), "num"),
+          td(statementCell)
         ]);
       }).join("");
     }
@@ -1773,6 +2253,225 @@
       renderCashflowChart(periods, grouping);
     }
 
+    function renderReportRows(elementId, rows) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      element.innerHTML = rows.map((item) => row([
+        td(item[0]),
+        td(item[1], "num")
+      ], item[2] || "")).join("");
+    }
+
+    function renderHmrcGuide(data, result) {
+      const stockSchemeIncome = result.rsuGrossGbp + result.esppTaxableForIncome;
+      const medicalDentalBik = result.privateBik + result.dentalEmployerBik;
+      const otherBenefitEstimate = result.gymflexBik + data.otherBikAnnual;
+      const hmrcRows = [
+        [
+          "P60 / SA102 box 1",
+          "Pay from employment before tax",
+          money(result.stockAdjustedIncome),
+          "Reconcile to P60/P45. This estimate includes taxable pay after salary sacrifice/net-pay reductions, payrolled BIK, RSU, and ESPP taxable income."
+        ],
+        [
+          "SA102 box 1.1",
+          "Payrolled benefits included in box 1",
+          money(result.totalBik),
+          "Use only where benefits are payrolled and this figure is supplied or confirmed by payroll, especially for student loan calculations."
+        ],
+        [
+          "SA102 box 2",
+          "UK tax taken off pay in box 1",
+          money(result.totalIncomeTax),
+          "Income tax estimate only. National Insurance is shown separately and is not entered in this box."
+        ],
+        [
+          "SA102 box 11",
+          "Private medical and dental insurance",
+          money(medicalDentalBik),
+          "Use P11D or equivalent information if not payrolled. Do not also enter benefits already included through payrolled benefits."
+        ],
+        [
+          "SA102 box 15",
+          "Other benefits",
+          money(otherBenefitEstimate),
+          "Use only when the benefit category matches your P11D or equivalent information."
+        ],
+        [
+          "SA101 Ai 2 box 1",
+          "Share schemes taxable amount not fully taxed",
+          money(stockSchemeIncome),
+          "Use only for share scheme income that was not fully taxed through payroll, or where payroll used too low a valuation."
+        ],
+        [
+          "Pension check",
+          "Employee plus employer pension added",
+          money(result.totalPensionAdded),
+          "Not a direct employment pay box. Reconcile to pension statements for annual allowance or tapered annual allowance checks."
+        ]
+      ];
+
+      document.getElementById("hmrcRows").innerHTML = hmrcRows.map((item) => row([
+        td(item[0]),
+        td(item[1]),
+        td(item[2], "num"),
+        td(item[3])
+      ])).join("");
+    }
+
+    function eventShareForMonth(count, monthIndex) {
+      const months = eventMonths(count);
+      if (!months.length) return 0;
+      const hits = months.filter((eventMonth) => eventMonth === monthIndex).length;
+      return hits / months.length;
+    }
+
+    function monthIsActive(monthIndex, activeMonths) {
+      return monthIndex < clamp(activeMonths, 0, 12);
+    }
+
+    function filteredAmountRows(items) {
+      const kept = items.filter((item) => item.keep || Math.abs(item.value) > 0.005);
+      return kept.length ? kept : [{ label: "No items for this month", value: 0, keep: true }];
+    }
+
+    function renderAmountTable(elementId, items, totalLabel, totalValue) {
+      const rows = filteredAmountRows(items).map((item) => row([
+        td(item.label),
+        td(money(item.value), "num")
+      ]));
+      rows.push(row([
+        td(totalLabel),
+        td(money(totalValue), "num")
+      ], "total"));
+      document.getElementById(elementId).innerHTML = rows.join("");
+    }
+
+    function renderPayslipReport(data, result, monthIndexOverride = selectedPayslipMonthIndex) {
+      const monthIndex = clamp(Number(monthIndexOverride) || 0, 0, 11);
+      const monthly = buildMonthlyCashflow(data, result);
+      const period = monthly[monthIndex];
+      const rsuShare = eventShareForMonth(data.rsuVests, monthIndex);
+      const esppShare = eventShareForMonth(data.esppPeriods, monthIndex);
+      const taxableBik =
+        (monthIsActive(monthIndex, data.privateHealthMonths) ? data.privateHealthBikAnnual / 12 : 0) +
+        (monthIsActive(monthIndex, data.dentalMonths) ? data.dentalEmployerBikAnnual / 12 : 0) +
+        (monthIsActive(monthIndex, data.gymflexMonths) ? data.gymflexBikAnnual / 12 : 0) +
+        data.otherBikAnnual / 12;
+      const rsuGross = result.rsuGrossGbp * rsuShare;
+      const esppStockValue = result.esppFmvGbp * esppShare;
+      const stockValue = rsuGross + esppStockValue;
+
+      const earnings = [
+        { label: "Base salary", value: data.baseSalary / 12, keep: true },
+        { label: "Car allowance", value: data.carAllowanceMonthly },
+        { label: "Target bonus allocated", value: result.bonus / 12 },
+        { label: "Other taxable cash", value: data.otherTaxableCash / 12 },
+        { label: "Other tax-free cash", value: data.otherTaxFreeCash / 12 },
+        { label: "RSU vest gross value", value: rsuGross },
+        { label: "ESPP stock value at purchase", value: esppStockValue },
+        { label: "Taxable BIK allocated, not cash", value: taxableBik }
+      ];
+
+      const deductions = [
+        { label: "PAYE income tax on salary/BIK", value: result.regularTax.tax / 12, keep: true },
+        { label: "PAYE income tax on ESPP discount", value: result.esppIncomeTax * esppShare },
+        { label: "PAYE income tax on RSU vest", value: result.rsuIncomeTax * rsuShare },
+        { label: "Employee NI on salary", value: result.regularNi / 12, keep: true },
+        { label: "Employee NI on ESPP discount", value: result.esppNi * esppShare },
+        { label: "Employee NI on RSU vest", value: result.rsuNi * rsuShare },
+        { label: "Employee pension", value: result.pension / 12, keep: true },
+        { label: "Other pre-tax deductions", value: data.otherPreTaxDeductions / 12 },
+        { label: "Gym salary sacrifice", value: monthIsActive(monthIndex, data.gymflexMonths) ? data.gymflexSacrificeMonthly : 0 },
+        { label: "ESPP contribution withheld", value: result.esppContribution / 12 },
+        { label: "Dental employee contribution", value: monthIsActive(monthIndex, data.dentalMonths) ? data.dentalEmployeeMonthly : 0 },
+        { label: "Student loan / payroll deductions", value: data.studentLoanDeductions / 12 },
+        { label: "Other post-tax deductions", value: data.otherPostTaxDeductions / 12 },
+        { label: "Other RSU deductions", value: data.otherRsuDeductions * rsuShare }
+      ];
+
+      const deductionTotal = period.incomeTax + period.employeeNi + period.pension + period.esppContribution + period.deductions;
+      const grossCashAndStock = period.grossCash + stockValue;
+      const otherDeductions = period.pension + period.esppContribution + period.deductions;
+
+      setText("payslipTitle", `Payslip Estimate - ${period.label}`);
+      renderAmountTable("payslipEarningsRows", earnings, "Gross cash plus stock value", grossCashAndStock);
+      renderAmountTable("payslipDeductionRows", deductions, "Total deductions, tax, and NI", deductionTotal);
+      renderReportRows("payslipSummaryRows", [
+        ["Gross cash pay", money(period.grossCash)],
+        ["Gross stock value", money(stockValue)],
+        ["Taxable BIK allocated, not paid as cash", money(taxableBik)],
+        ["Income tax deducted", money(period.incomeTax)],
+        ["Employee NI deducted", money(period.employeeNi)],
+        ["Pension and other deductions", money(otherDeductions)],
+        ["Estimated net cash plus stock value", money(period.net), "total"]
+      ]);
+    }
+
+    function renderPrintableReport(data, result) {
+      const date = new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      }).format(new Date());
+      setText("reportDate", `Generated ${date}`);
+      setText("reportSession", `Session ${activeSessionKey || "-"}`);
+
+      renderReportRows("reportAnnualRows", [
+        ["Base salary", money(data.baseSalary)],
+        ["Car allowance", money(result.carAnnual)],
+        ["Target bonus", money(result.bonus)],
+        ["Gross cash before deductions", money(result.grossCash), "total"],
+        ["Taxable cash before BIK", money(result.taxableCash)],
+        ["Tax-free cash included above", money(result.taxFreeCash)],
+        ["Benefit-in-kind taxable value", money(result.totalBik)],
+        ["RSU gross value", money(result.rsuGrossGbp)],
+        ["RSU net after tax/NI", money(result.rsuNet)],
+        ["ESPP contribution withheld", money(result.esppContribution)],
+        ["ESPP stock value after tax", money(result.esppStockAfterTax)],
+        ["Salary take-home, excluding RSU", money(result.salaryTakeHome), "total"],
+        ["Effective annual take-home with RSU", money(result.withRsuAnnual), "total"],
+        ["Monthly take-home, excluding RSU", money(result.salaryTakeHome / 12)],
+        ["Monthly effective take-home with RSU", money(result.withRsuAnnual / 12)]
+      ]);
+
+      renderReportRows("reportTaxRows", [
+        ["PAYE taxable pay estimate", money(result.stockAdjustedIncome), "total"],
+        ["Personal Allowance available", money(result.stockTax.personalAllowance)],
+        ["Tax-free allowance remaining", money(Math.max(0, result.stockTax.personalAllowance - result.stockAdjustedIncome))],
+        ["Basic-rate taxable amount", money(result.stockTax.basic)],
+        ["Higher-rate taxable amount", money(result.stockTax.higher)],
+        ["Additional-rate taxable amount", money(result.stockTax.additional)],
+        ["Income tax estimate", money(result.totalIncomeTax), "total"],
+        ["Employee NI estimate", money(result.totalEmployeeNi)],
+        ["Tax plus employee NI", money(result.totalTaxAndNi), "total"],
+        ["Employee pension contribution", money(result.pension)],
+        ["Employer pension contribution", money(result.employerPension)],
+        ["Total pension added", money(result.totalPensionAdded), "total"]
+      ]);
+
+      renderHmrcGuide(data, result);
+      renderPayslipReport(data, result, selectedPayslipMonthIndex);
+    }
+
+    function clearPrintMode() {
+      document.body.classList.remove("print-summary", "print-payslip");
+    }
+
+    function preparePrint(mode, monthIndex = selectedPayslipMonthIndex) {
+      selectedPayslipMonthIndex = clamp(Number(monthIndex) || 0, 0, 11);
+      const data = readInputs();
+      const result = calculate(data);
+      renderPrintableReport(data, result);
+      clearPrintMode();
+      const className = mode === "payslip" ? "print-payslip" : "print-summary";
+      document.body.classList.add(className);
+      if (typeof window.print === "function") {
+        window.print();
+      }
+      window.setTimeout(clearPrintMode, 600);
+    }
+
     function baseUrlWithoutState() {
       return location.href.split("#")[0].split("?")[0];
     }
@@ -1868,6 +2567,99 @@
       }
     }
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function readSessionPayload(key) {
+      const store = sessionStore();
+      if (!store) return null;
+      try {
+        const raw = store.getItem(sessionPayloadKey(key));
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function stateToData(payload = {}) {
+      const data = {};
+      inputIds.forEach((id) => {
+        const fallback = Object.prototype.hasOwnProperty.call(defaultInputValues, id)
+          ? defaultInputValues[id]
+          : 0;
+        const value = Object.prototype.hasOwnProperty.call(payload, id) ? payload[id] : fallback;
+        const number = Number(value);
+        data[id] = Number.isFinite(number) ? number : 0;
+      });
+      checkboxIds.forEach((id) => {
+        const fallback = Object.prototype.hasOwnProperty.call(defaultCheckboxValues, id)
+          ? defaultCheckboxValues[id]
+          : false;
+        data[id] = Object.prototype.hasOwnProperty.call(payload, id)
+          ? boolFromState(payload[id])
+          : fallback;
+      });
+      return data;
+    }
+
+    function sessionSummary(key) {
+      const payload = readSessionPayload(key);
+      if (!payload) {
+        return {
+          key,
+          monthly: "No saved inputs yet",
+          detail: "Open this key to start a new scenario."
+        };
+      }
+
+      const data = stateToData(payload);
+      const result = calculate(data);
+      const summaryParts = [
+        `${money(data.baseSalary)} base`,
+        `${num(data.pensionPct, 1)}% pension`
+      ];
+      if (data.targetBonusPct > 0) summaryParts.push(`${num(data.targetBonusPct, 1)}% bonus`);
+      if (result.rsuGrossGbp > 0) summaryParts.push(`${money(result.rsuGrossGbp)} RSU gross`);
+      if (result.esppContribution > 0) summaryParts.push(`${money(result.esppContribution)} ESPP`);
+
+      return {
+        key,
+        monthly: `${money(result.salaryTakeHome / 12)} / month`,
+        detail: `${money(result.salaryTakeHome)} annual take-home. ${summaryParts.join(" · ")}.`
+      };
+    }
+
+    function renderSessionHistory() {
+      const list = document.getElementById("sessionHistoryList");
+      const count = document.getElementById("sessionHistoryCount");
+      if (!list || !count) return;
+
+      const keys = readSessionKeys();
+      count.textContent = `${keys.length} saved`;
+      if (!keys.length) {
+        list.innerHTML = `<div class="session-empty">No saved sessions yet. New scenarios will appear here automatically.</div>`;
+        return;
+      }
+
+      list.innerHTML = keys.map((key) => {
+        const summary = sessionSummary(key);
+        const activeClass = key === activeSessionKey ? " active" : "";
+        return `<button class="session-card${activeClass}" type="button" data-session-key="${escapeHtml(key)}">
+          <span class="session-card-top">
+            <span class="session-card-key">${escapeHtml(key)}</span>
+            <span class="session-card-pay">${escapeHtml(summary.monthly)}</span>
+          </span>
+          <span class="session-card-detail">${escapeHtml(summary.detail)}</span>
+        </button>`;
+      }).join("");
+    }
+
     function rememberSessionKey(key) {
       const normalized = normalizeSessionKey(key);
       if (normalized.length !== 8) return;
@@ -1890,6 +2682,7 @@
       if (activeSessionKey && keys.includes(activeSessionKey)) {
         select.value = activeSessionKey;
       }
+      renderSessionHistory();
     }
 
     function generateSessionKey() {
@@ -1985,6 +2778,41 @@
       }
     }
 
+    function clearAllSessions() {
+      const store = sessionStore();
+      if (!store) {
+        setStorageStatus("Session storage is unavailable.");
+        return;
+      }
+      const shouldClear = typeof window.confirm === "function"
+        ? window.confirm("Clear all saved sessions in this browser session?")
+        : true;
+      if (!shouldClear) return;
+
+      try {
+        const keys = readSessionKeys();
+        keys.forEach((key) => store.removeItem(sessionPayloadKey(key)));
+        if (typeof store.length === "number" && typeof store.key === "function") {
+          const extraKeys = [];
+          for (let index = 0; index < store.length; index += 1) {
+            const storageKey = store.key(index);
+            if (storageKey && storageKey.startsWith(sessionPayloadPrefix)) {
+              extraKeys.push(storageKey);
+            }
+          }
+          extraKeys.forEach((storageKey) => store.removeItem(storageKey));
+        }
+        store.removeItem(sessionIndexKey);
+        activeSessionKey = "";
+        applyDefaultInputs();
+        setActiveSessionKey(generateSessionKey());
+        setStorageStatus(`Cleared all saved sessions. Created session ${activeSessionKey}.`);
+        update();
+      } catch {
+        setStorageStatus("Could not clear saved sessions.");
+      }
+    }
+
     function createNewSession() {
       applyDefaultInputs();
       setActiveSessionKey(generateSessionKey());
@@ -2060,7 +2888,7 @@
     }
 
     function closeDrawers() {
-      document.body.classList.remove("drawer-inputs-open", "drawer-session-open");
+      document.body.classList.remove("drawer-inputs-open", "drawer-session-open", "drawer-history-open");
     }
 
     function openDrawer(name) {
@@ -2070,6 +2898,9 @@
       }
       if (name === "session") {
         document.body.classList.add("drawer-session-open");
+      }
+      if (name === "history") {
+        document.body.classList.add("drawer-history-open");
       }
     }
 
@@ -2081,8 +2912,10 @@
     function setupDrawers() {
       addClickHandler("open-inputs", () => openDrawer("inputs"));
       addClickHandler("open-session", () => openDrawer("session"));
+      addClickHandler("open-history", () => openDrawer("history"));
       addClickHandler("close-inputs", closeDrawers);
       addClickHandler("close-session", closeDrawers);
+      addClickHandler("close-history", closeDrawers);
       addClickHandler("drawerOverlay", closeDrawers);
       if (window.addEventListener) {
         window.addEventListener("keydown", (event) => {
@@ -2125,52 +2958,20 @@
       renderStockRows(result);
       updatePensionSensitivity(data);
       renderCashflow(data, result);
+      renderPrintableReport(data, result);
       saveSessionState();
     }
 
     function applyDefaultInputs() {
-      const defaults = {
-        baseSalary: 0,
-        carAllowanceMonthly: 0,
-        targetBonusPct: 0,
-        pensionPct: 0,
-        employerPensionPct: 0,
-        employerPensionAnnual: 0,
-        otherTaxableCash: 0,
-        otherTaxFreeCash: 0,
-        otherPreTaxDeductions: 0,
-        otherPostTaxDeductions: 0,
-        studentLoanDeductions: 0,
-        privateHealthBikAnnual: 0,
-        privateHealthMonths: 12,
-        dentalEmployeeMonthly: 0,
-        dentalMonths: 12,
-        dentalEmployerBikAnnual: 0,
-        gymflexBikAnnual: 0,
-        gymflexSacrificeMonthly: 0,
-        gymflexMonths: 12,
-        otherBikAnnual: 0,
-        rsuVestUsd: 0,
-        rsuVests: 4,
-        rsuFx: 1.25,
-        otherRsuDeductions: 0,
-        esppContributionPct: 0,
-        esppPeriods: 2,
-        esppDiscountPct: 15,
-        esppStartFmv: 0,
-        esppPurchaseFmv: 0,
-        esppFx: 1.25
-      };
-      Object.entries(defaults).forEach(([id, value]) => {
+      Object.entries(defaultInputValues).forEach(([id, value]) => {
         document.getElementById(id).value = value;
       });
-      document.getElementById("pensionReducesTax").checked = true;
-      document.getElementById("pensionReducesNI").checked = true;
-      document.getElementById("rsuNiApplies").checked = true;
-      document.getElementById("esppTaxApplies").checked = true;
-      document.getElementById("esppNiApplies").checked = true;
-      document.getElementById("showPensionSensitivity").checked = false;
-      document.getElementById("chartGrouping").value = "monthly";
+      Object.entries(defaultCheckboxValues).forEach(([id, value]) => {
+        document.getElementById(id).checked = value;
+      });
+      Object.entries(defaultSelectValues).forEach(([id, value]) => {
+        document.getElementById(id).value = value;
+      });
     }
 
     function resetDefaults() {
@@ -2224,6 +3025,19 @@
     document.getElementById("new-session").addEventListener("click", createNewSession);
     document.getElementById("reset").addEventListener("click", resetDefaults);
     document.getElementById("clear-saved").addEventListener("click", clearCurrentSession);
+    document.getElementById("clear-all-sessions").addEventListener("click", clearAllSessions);
+    document.getElementById("print-summary").addEventListener("click", () => preparePrint("summary"));
+    document.getElementById("cashflowRows").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-month-index]");
+      if (!button) return;
+      preparePrint("payslip", button.getAttribute("data-month-index"));
+    });
+    document.getElementById("sessionHistoryList").addEventListener("click", (event) => {
+      const card = event.target.closest("[data-session-key]");
+      if (!card) return;
+      loadSessionState(card.getAttribute("data-session-key"));
+      update();
+    });
     document.getElementById("copy-link").addEventListener("click", async () => {
       const url = buildShareUrl();
       try {
@@ -2238,6 +3052,9 @@
     enhanceFieldRows();
     addHelpTooltips();
     setupDrawers();
+    if (window.addEventListener) {
+      window.addEventListener("afterprint", clearPrintMode);
+    }
     renderSessionOptions();
     const keyFromUrl = sessionKeyFromUrl();
     if (keyFromUrl) {
