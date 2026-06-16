@@ -412,10 +412,100 @@
       transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
     }
 
+    .summary-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-guide {
+      display: grid;
+      gap: 8px;
+      align-items: start;
+      padding: 8px 10px;
+      border-left: 4px solid var(--accent);
+      background: #fffaf0;
+      color: #3f3524;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .summary-guide strong {
+      color: var(--ink);
+    }
+
+    .summary-guide .guide-copy {
+      display: block;
+      min-width: 0;
+    }
+
+    .summary-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .summary-block {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: #fbfdfc;
+    }
+
+    .summary-block-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .summary-block-title h3 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    .summary-block-title span {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .summary-block-help {
+      margin: -4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .summary-detail {
+      display: grid;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
     .outputs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+      gap: 8px;
+    }
+
+    .summary-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .summary-metrics .metric.primary,
+    .summary-metrics .metric.emphasis {
+      grid-column: 1 / -1;
     }
 
     .metric {
@@ -425,22 +515,55 @@
       border-radius: 0;
       padding: 10px;
       min-height: 82px;
+      display: grid;
+      align-content: start;
+      grid-template-rows: minmax(34px, auto) auto 1fr;
     }
 
-    .metric:nth-child(1),
-    .metric:nth-child(2) {
+    .metric.primary {
       background: var(--accent-soft);
       border-color: #dcc9aa;
       border-top-color: var(--accent);
       border-radius: 6px;
+      min-height: 118px;
+      padding: 14px;
+      border-left: 5px solid var(--accent);
+    }
+
+    .metric.primary strong {
+      color: #4b3b20;
+      font-size: 13px;
+    }
+
+    .metric.primary .value {
+      font-size: 32px;
+      line-height: 1.05;
+    }
+
+    .metric.primary .sub {
+      font-size: 13px;
+      color: #5f523c;
+    }
+
+    .metric.emphasis {
+      background: #fffaf0;
+      border-color: #dcc9aa;
+      border-top-color: var(--accent);
+    }
+
+    .summary-block .metric.emphasis {
+      min-height: 118px;
+      padding: 14px;
     }
 
     .metric strong {
-      display: block;
+      display: flex;
+      align-items: flex-start;
       margin-bottom: 7px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+      line-height: 1.25;
     }
 
     .metric .value {
@@ -454,6 +577,7 @@
       margin-top: 4px;
       color: var(--muted);
       font-size: 12px;
+      line-height: 1.35;
     }
 
     table {
@@ -821,6 +945,10 @@
         grid-template-columns: 1fr;
       }
 
+      .summary-columns {
+        grid-template-columns: 1fr;
+      }
+
       .outputs {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -946,6 +1074,31 @@
 
       .outputs {
         grid-template-columns: 1fr;
+      }
+
+      .summary-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-block {
+        padding: 9px;
+      }
+
+      .summary-guide {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-block-title {
+        display: grid;
+        gap: 2px;
+      }
+
+      .summary-block-title span {
+        text-align: left;
+      }
+
+      .metric.primary .value {
+        font-size: 28px;
       }
 
       table {
@@ -1116,7 +1269,7 @@
           <h3>Cash Compensation</h3>
           <div class="fields">
             <label for="baseSalary">Base salary</label>
-            <input id="baseSalary" type="number" value="0" step="1000" />
+            <input id="baseSalary" type="number" value="35000" step="1000" />
             <span class="unit">GBP annual</span>
 
             <label for="carAllowanceMonthly">Car allowance</label>
@@ -1124,11 +1277,11 @@
             <span class="unit">GBP monthly</span>
 
             <label for="targetBonusPct">Target bonus</label>
-            <input id="targetBonusPct" type="number" value="0" step="0.5" />
+            <input id="targetBonusPct" type="number" value="5" step="0.5" />
             <span class="unit">% of base</span>
 
             <label for="pensionPct">Pension contribution</label>
-            <input id="pensionPct" type="number" value="0" step="0.5" />
+            <input id="pensionPct" type="number" value="5" step="0.5" />
             <span class="unit">% of base, employee</span>
 
             <label for="employerPensionPct">Employer pension contribution</label>
@@ -1280,51 +1433,97 @@
       <section class="panel summary-panel">
         <div class="panel-title"><h2>Live Summary</h2></div>
         <div class="panel-body">
-          <div class="outputs">
-            <div class="metric">
-              <strong>Salary take-home</strong>
-              <div id="salaryMonthly" class="value">GBP 0</div>
-              <div id="salaryAnnual" class="sub">GBP 0 per year</div>
+          <div class="summary-stack">
+            <div class="summary-guide">
+              <strong>How to read this</strong>
+              <span class="guide-copy">Gross is before deductions. Net is cash after deductions. Pension reduces cash, but adds to pension savings.</span>
             </div>
-            <div class="metric">
-              <strong>With RSU annualized</strong>
-              <div id="withRsuMonthly" class="value">GBP 0</div>
-              <div id="withRsuAnnual" class="sub">GBP 0 per year</div>
+
+            <div class="summary-columns">
+              <section class="summary-block">
+                <div class="summary-block-title">
+                  <h3>Without RSU</h3>
+                  <span>regular pay</span>
+                </div>
+                <p class="summary-block-help">Normal salary cashflow after tax, NI, pension, benefits, and deductions.</p>
+                <div class="summary-metrics">
+                  <div class="metric primary">
+                    <strong>Monthly net pay</strong>
+                    <div id="salaryMonthly" class="value">GBP 0</div>
+                    <div id="salaryAnnual" class="sub">GBP 0 per year</div>
+                  </div>
+                  <div class="metric">
+                    <strong>Gross annual pay</strong>
+                    <div id="grossWithoutRsu" class="value">GBP 0</div>
+                    <div class="sub">Before tax and deductions</div>
+                  </div>
+                  <div class="metric">
+                    <strong>Cash kept from regular gross</strong>
+                    <div id="rateWithoutRsu" class="value">0.0%</div>
+                    <div class="sub">After tax, NI, pension, and deductions</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="summary-block">
+                <div class="summary-block-title">
+                  <h3>With RSU</h3>
+                  <span>annualized view</span>
+                </div>
+                <p class="summary-block-help">Adds estimated RSU net value. Monthly figure is annual total divided by 12.</p>
+                <div class="summary-metrics">
+                  <div class="metric emphasis">
+                    <strong>Monthly net incl. RSU</strong>
+                    <div id="withRsuMonthly" class="value">GBP 0</div>
+                    <div id="withRsuAnnual" class="sub">GBP 0 per year</div>
+                  </div>
+                  <div class="metric">
+                    <strong>Gross annual pay plus RSU</strong>
+                    <div id="grossWithRsu" class="value">GBP 0</div>
+                    <div class="sub">Before tax and deductions</div>
+                  </div>
+                  <div class="metric">
+                    <strong>Cash + RSU net kept from total gross</strong>
+                    <div id="rateWithRsu" class="value">0.0%</div>
+                    <div class="sub">Compares annual net cash plus RSU net to gross pay plus RSU gross</div>
+                  </div>
+                </div>
+              </section>
             </div>
-            <div class="metric">
-              <strong>Take-home rate without RSU</strong>
-              <div id="rateWithoutRsu" class="value">0.0%</div>
-              <div id="grossWithoutRsu" class="sub">gross basis GBP 0</div>
-            </div>
-            <div class="metric">
-              <strong>Take-home rate with RSU</strong>
-              <div id="rateWithRsu" class="value">0.0%</div>
-              <div id="grossWithRsu" class="sub">gross basis GBP 0</div>
-            </div>
-            <div class="metric">
-              <strong>Net RSU take-home</strong>
-              <div id="netRsuAnnual" class="value">GBP 0</div>
-              <div id="netRsuVest" class="sub">GBP 0 per vest</div>
-            </div>
-            <div class="metric">
-              <strong>RSU tax+NI rate incl. PA taper</strong>
-              <div id="rsuRateInclTaper" class="value">0.0%</div>
-              <div id="paLostDueRsu" class="sub">PA lost GBP 0</div>
-            </div>
-            <div class="metric">
-              <strong>RSU band-only tax+NI rate</strong>
-              <div id="rsuBandOnlyRate" class="value">0.0%</div>
-              <div class="sub">excludes extra PA taper</div>
-            </div>
-            <div class="metric">
-              <strong>ESPP stock value after tax</strong>
-              <div id="esppStockAfterTax" class="value">GBP 0</div>
-              <div id="esppDiscountTax" class="sub">discount tax+NI GBP 0</div>
-            </div>
-            <div class="metric">
-              <strong>Pension added annually</strong>
-              <div id="pensionAnnualTotal" class="value">GBP 0</div>
-              <div id="pensionSplit" class="sub">employee GBP 0 + employer GBP 0</div>
+
+            <div class="summary-detail">
+              <div class="summary-block-title">
+                <h3>Stock and Pension</h3>
+                <span>supporting figures</span>
+              </div>
+              <div class="outputs">
+                <div class="metric">
+                  <strong>RSU net after tax and NI</strong>
+                  <div id="netRsuAnnual" class="value">GBP 0</div>
+                  <div id="netRsuVest" class="sub">GBP 0 per vest</div>
+                </div>
+                <div class="metric">
+                  <strong>RSU tax and NI rate</strong>
+                  <div id="rsuRateInclTaper" class="value">0.0%</div>
+                  <div id="paLostDueRsu" class="sub">Personal Allowance lost GBP 0</div>
+                </div>
+                <div class="metric">
+                  <strong>RSU rate before taper</strong>
+                  <div id="rsuBandOnlyRate" class="value">0.0%</div>
+                  <div class="sub">Excludes extra Personal Allowance loss</div>
+                </div>
+                <div class="metric">
+                  <strong>ESPP value after tax</strong>
+                  <div id="esppStockAfterTax" class="value">GBP 0</div>
+                  <div id="esppDiscountTax" class="sub">Tax and NI on discount GBP 0</div>
+                </div>
+                <div class="metric">
+                  <strong>Pension added this year</strong>
+                  <div id="pensionAnnualTotal" class="value">GBP 0</div>
+                  <div id="pensionSplit" class="sub">Employee GBP 0 + employer GBP 0</div>
+                  <div id="pensionRateDetail" class="sub">Employee 0.0% of base salary</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1478,6 +1677,13 @@
                   <th class="num">With RSU annual</th>
                   <th class="num">With RSU monthly</th>
                   <th class="num">Rate</th>
+                  <th class="num">Personal Allowance</th>
+                  <th class="num">Basic taxable</th>
+                  <th class="num">Basic tax</th>
+                  <th class="num">Higher taxable</th>
+                  <th class="num">Higher tax</th>
+                  <th class="num">Additional taxable</th>
+                  <th class="num">Additional tax</th>
                   <th>Chart</th>
                 </tr>
               </thead>
@@ -1574,10 +1780,10 @@
     let selectedPayslipMonthIndex = 0;
 
     const defaultInputValues = {
-      baseSalary: 0,
+      baseSalary: 35000,
       carAllowanceMonthly: 0,
-      targetBonusPct: 0,
-      pensionPct: 0,
+      targetBonusPct: 5,
+      pensionPct: 5,
       employerPensionPct: 0,
       employerPensionAnnual: 0,
       otherTaxableCash: 0,
@@ -1994,6 +2200,13 @@
           td(money(result.withRsuAnnual), "num"),
           td(money(result.withRsuAnnual / 12), "num"),
           td(pct(result.rateWithoutRsu), "num"),
+          td(money(result.regularTax.personalAllowance), "num"),
+          td(money(result.regularTax.basic), "num"),
+          td(money(result.regularTax.basic * tax.basicRate), "num"),
+          td(money(result.regularTax.higher), "num"),
+          td(money(result.regularTax.higher * tax.higherRate), "num"),
+          td(money(result.regularTax.additional), "num"),
+          td(money(result.regularTax.additional * tax.additionalRate), "num"),
           td(`<div class="bar-track"><div class="bar" style="width:${width}%"></div></div>`)
         ]);
       }).join("");
@@ -3114,18 +3327,19 @@
       setText("withRsuMonthly", money(result.withRsuAnnual / 12));
       setText("withRsuAnnual", `${money(result.withRsuAnnual)} per year`);
       setText("rateWithoutRsu", pct(result.rateWithoutRsu));
-      setText("grossWithoutRsu", `gross basis ${money(result.grossWithoutRsu)}`);
+      setText("grossWithoutRsu", money(result.grossWithoutRsu));
       setText("rateWithRsu", pct(result.rateWithRsu));
-      setText("grossWithRsu", `gross basis ${money(result.grossWithRsu)}`);
+      setText("grossWithRsu", money(result.grossWithRsu));
       setText("netRsuAnnual", money(result.rsuNet));
       setText("netRsuVest", `${money(data.rsuVests > 0 ? result.rsuNet / data.rsuVests : 0)} per vest`);
       setText("rsuRateInclTaper", pct(result.rsuTaxNiRate));
-      setText("paLostDueRsu", `PA lost ${money(result.paLostDueRsu)}`);
+      setText("paLostDueRsu", `Personal Allowance lost ${money(result.paLostDueRsu)}`);
       setText("rsuBandOnlyRate", pct(result.rsuBandOnlyRate));
       setText("esppStockAfterTax", money(result.esppStockAfterTax));
-      setText("esppDiscountTax", `discount tax+NI ${money(result.esppIncomeTax + result.esppNi)}`);
+      setText("esppDiscountTax", `Tax and NI on discount ${money(result.esppIncomeTax + result.esppNi)}`);
       setText("pensionAnnualTotal", money(result.totalPensionAdded));
-      setText("pensionSplit", `employee ${money(result.pension)} + employer ${money(result.employerPension)}`);
+      setText("pensionSplit", `Employee ${money(result.pension)} + employer ${money(result.employerPension)}`);
+      setText("pensionRateDetail", `Employee ${num(data.pensionPct, 1)}% of base salary`);
 
       const taperText = result.paLostDueRsu > 0
         ? `RSU is consuming ${money(result.paLostDueRsu)} of Personal Allowance. That is why the RSU rate including taper can move differently from the band-only rate.`
