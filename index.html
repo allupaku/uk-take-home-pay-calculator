@@ -687,9 +687,22 @@
 
     .calculation-narrative {
       display: grid;
-      gap: 7px;
+      gap: 9px;
       border-top: 1px solid var(--line);
       padding-top: 10px;
+    }
+
+    .narrative-section {
+      break-inside: avoid;
+      border-left: 3px solid #d8c39e;
+      padding: 0 0 0 10px;
+    }
+
+    .narrative-section h4 {
+      margin: 0 0 4px;
+      color: var(--ink);
+      font-size: 12.5px;
+      letter-spacing: 0;
     }
 
     .calculation-narrative p {
@@ -699,8 +712,26 @@
       line-height: 1.5;
     }
 
+    .calculation-narrative ul {
+      margin: 4px 0 0;
+      padding-left: 16px;
+      color: #243538;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .calculation-narrative li {
+      margin: 2px 0;
+    }
+
     .calculation-narrative strong {
       color: var(--ink);
+    }
+
+    .narrative-note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-style: italic;
     }
 
     .hmrc-table th:nth-child(1) {
@@ -2342,45 +2373,127 @@
       ])).join("");
     }
 
-    function narrativeParagraph(text) {
-      return `<p>${escapeHtml(text)}</p>`;
+    function strongText(value) {
+      return `<strong>${escapeHtml(value)}</strong>`;
+    }
+
+    function emText(value) {
+      return `<em>${escapeHtml(value)}</em>`;
+    }
+
+    function narrativeSection(title, intro, items = [], note = "") {
+      const list = items.length
+        ? `<ul>${items.map((item) => (
+          `<li><strong>${escapeHtml(item.label)}:</strong> ${item.text}</li>`
+        )).join("")}</ul>`
+        : "";
+      const noteHtml = note ? `<p class="narrative-note">${emText(note)}</p>` : "";
+      return `<section class="narrative-section">
+        <h4>${escapeHtml(title)}</h4>
+        <p>${intro}</p>
+        ${list}
+        ${noteHtml}
+      </section>`;
     }
 
     function renderCalculationNarrative(data, result) {
-      const salaryPieces = [
-        `base salary of ${money(data.baseSalary)}`,
-        `car allowance of ${money(result.carAnnual)}`,
-        `target bonus of ${money(result.bonus)}`,
-        `other taxable cash of ${money(data.otherTaxableCash)}`
-      ];
-      if (result.taxFreeCash > 0) {
-        salaryPieces.push(`tax-free cash of ${money(result.taxFreeCash)}`);
-      }
-
-      const pensionTaxText = data.pensionReducesTax
-        ? "The employee pension is treated as reducing taxable pay."
-        : "The employee pension is not treated as reducing taxable pay.";
-      const pensionNiText = data.pensionReducesNI
-        ? "It is also treated as reducing National Insurance-able pay."
-        : "It is not treated as reducing National Insurance-able pay.";
       const stockSchemeIncome = result.rsuGrossGbp + result.esppTaxableForIncome;
+      const pensionTaxText = data.pensionReducesTax
+        ? "reduces taxable pay"
+        : "does not reduce taxable pay";
+      const pensionNiText = data.pensionReducesNI
+        ? "reduces NI-able pay"
+        : "does not reduce NI-able pay";
 
-      const paragraphs = [
-        `The estimate starts with gross cash compensation of ${money(result.grossCash)}. This is built from ${salaryPieces.join(", ")}. Tax-free cash is included in take-home cash, but it is excluded from taxable pay and National Insurance calculations.`,
-        `Employee pension is calculated as ${num(data.pensionPct, 1)}% of base salary, giving ${money(result.pension)} for the year. Employer pension adds ${money(result.employerPension)}, so total pension added is ${money(result.totalPensionAdded)}. ${pensionTaxText} ${pensionNiText}`,
-        `Benefits in kind are not cash paid to you, but they increase taxable income in this model. The BIK total is ${money(result.totalBik)}, made up of private healthcare ${money(result.privateBik)}, employer-funded dental ${money(result.dentalEmployerBik)}, gym benefit ${money(result.gymflexBik)}, and other BIK ${money(data.otherBikAnnual)}. Employee-paid dental, Gymflex salary sacrifice, student loan, ESPP contribution, and other deductions reduce net pay separately according to their input category.`,
-        `Taxable employment income before stock is estimated as ${money(result.adjustedIncome)}. This starts with taxable cash of ${money(result.taxableCash)}, subtracts tax-reducing pension and other pre-tax deductions where selected, subtracts Gymflex salary sacrifice, and then adds taxable BIK. Personal Allowance is then tapered where adjusted income exceeds the taper threshold, leaving ${money(result.regularTax.personalAllowance)} of Personal Allowance before stock income.`,
-        `Income tax is applied across the tax bands shown in the Tax and NI Summary. Before stock income, estimated income tax is ${money(result.regularTax.tax)}. Including RSU and taxable ESPP discount, the total income tax estimate is ${money(result.totalIncomeTax)}.`,
-        `National Insurance is estimated from monthly NI-able pay of ${money(result.niablePay / 12)} for regular salary income, after any NI-reducing deductions selected in the inputs. Regular employee NI is ${money(result.regularNi)}. Stock-plan NI is added separately where the RSU and ESPP NI checkboxes are enabled, giving total employee NI of ${money(result.totalEmployeeNi)}.`,
-        `RSU income is converted from USD to GBP using the RSU FX input. The annual RSU gross value is ${money(result.rsuGrossGbp)}. Estimated RSU net take-home is ${money(result.rsuNet)} after RSU income tax of ${money(result.rsuIncomeTax)}, employee NI of ${money(result.rsuNi)}, and other RSU deductions of ${money(data.otherRsuDeductions)}. The RSU tax rate including Personal Allowance taper is ${pct(result.rsuTaxNiRate)}.`,
-        `ESPP contribution is capped at 10% of eligible earnings in this model. The contribution used is ${pct(result.esppContributionRate)} of eligible earnings, or ${money(result.esppContribution)}. The estimated ESPP taxable discount is ${money(result.esppTaxableDiscount)}; the model applies income tax of ${money(result.esppIncomeTax)} and employee NI of ${money(result.esppNi)} when those options are enabled. Estimated ESPP stock value after tax is ${money(result.esppStockAfterTax)}.`,
-        `Salary take-home excluding RSU is ${money(result.salaryTakeHome)} for the year, or ${money(result.salaryTakeHome / 12)} per month. This is gross cash less pre-tax deductions, income tax, employee NI, post-tax deductions, ESPP contribution, and employee-paid benefits. Effective take-home including annual RSU net value is ${money(result.withRsuAnnual)}, or ${money(result.withRsuAnnual / 12)} per month.`,
-        `The HMRC filing guide is a reconciliation aid only. Use your employer payslips, P60, P45, P11D, share-plan statements, and official HMRC forms as the final source, especially where benefits or stock income have already been payrolled. The share scheme estimate of ${money(stockSchemeIncome)} should not be duplicated on a return if it is already fully included and taxed through payroll.`
+      const sections = [
+        narrativeSection(
+          "1. Cash Pay Included",
+          `The model starts with gross cash compensation of ${strongText(money(result.grossCash))}.`,
+          [
+            { label: "Base salary", text: strongText(money(data.baseSalary)) },
+            { label: "Car allowance", text: `${strongText(money(result.carAnnual))} for the year` },
+            { label: "Target bonus", text: `${strongText(money(result.bonus))} based on ${strongText(`${num(data.targetBonusPct, 1)}%`)} of base salary` },
+            { label: "Other taxable cash", text: strongText(money(data.otherTaxableCash)) },
+            { label: "Tax-free cash", text: `${strongText(money(result.taxFreeCash))} included in cash received, but excluded from taxable pay and NI` }
+          ]
+        ),
+        narrativeSection(
+          "2. Pension Treatment",
+          `Employee pension is calculated from base salary, not from total compensation.`,
+          [
+            { label: "Employee pension", text: `${strongText(`${num(data.pensionPct, 1)}%`)} of base salary = ${strongText(money(result.pension))}` },
+            { label: "Employer pension", text: `${strongText(money(result.employerPension))} added separately; it is pension accumulation, not take-home pay` },
+            { label: "Tax and NI switches", text: `employee pension ${strongText(pensionTaxText)} and ${strongText(pensionNiText)} in this scenario` },
+            { label: "Total pension added", text: strongText(money(result.totalPensionAdded)) }
+          ],
+          "These pension figures are estimates for planning and should be reconciled to employer and pension-provider statements."
+        ),
+        narrativeSection(
+          "3. Benefits In Kind and Deductions",
+          `Benefits in kind increase taxable income, but they are ${emText("not cash paid to you")}.`,
+          [
+            { label: "Private healthcare BIK", text: strongText(money(result.privateBik)) },
+            { label: "Employer-funded dental BIK", text: strongText(money(result.dentalEmployerBik)) },
+            { label: "Gym benefit BIK", text: strongText(money(result.gymflexBik)) },
+            { label: "Other BIK", text: strongText(money(data.otherBikAnnual)) },
+            { label: "Total taxable BIK", text: strongText(money(result.totalBik)) },
+            { label: "Separate deductions", text: "employee-paid dental, Gymflex salary sacrifice, student loan, ESPP contribution, and other deductions are taken from pay according to their input category" }
+          ]
+        ),
+        narrativeSection(
+          "4. Taxable Income, Allowance, and Tax",
+          `Taxable employment income before stock is estimated as ${strongText(money(result.adjustedIncome))}.`,
+          [
+            { label: "Starting point", text: `taxable cash of ${strongText(money(result.taxableCash))}` },
+            { label: "Adjustments", text: "subtract tax-reducing pension and other pre-tax deductions where selected, subtract Gymflex salary sacrifice, then add taxable BIK" },
+            { label: "Personal Allowance before stock", text: strongText(money(result.regularTax.personalAllowance)) },
+            { label: "Income tax before stock", text: strongText(money(result.regularTax.tax)) },
+            { label: "Income tax including stock", text: strongText(money(result.totalIncomeTax)) }
+          ],
+          "The Tax and NI Summary table shows how much income falls into each tax band."
+        ),
+        narrativeSection(
+          "5. National Insurance",
+          `Regular employee NI is estimated from monthly NI-able pay of ${strongText(money(result.niablePay / 12))}.`,
+          [
+            { label: "Regular employee NI", text: strongText(money(result.regularNi)) },
+            { label: "Stock-plan NI", text: "added separately where the RSU and ESPP NI options are enabled" },
+            { label: "Total employee NI", text: strongText(money(result.totalEmployeeNi)) }
+          ]
+        ),
+        narrativeSection(
+          "6. Stock Plans",
+          `RSU and ESPP values are kept visible because they often arrive outside normal monthly salary.`,
+          [
+            { label: "RSU gross value", text: `${strongText(money(result.rsuGrossGbp))} after USD to GBP conversion using the RSU FX input` },
+            { label: "RSU deductions", text: `${strongText(money(result.rsuIncomeTax))} income tax, ${strongText(money(result.rsuNi))} employee NI, and ${strongText(money(data.otherRsuDeductions))} other RSU deductions` },
+            { label: "RSU net take-home", text: `${strongText(money(result.rsuNet))}; effective RSU tax plus NI rate including Personal Allowance taper is ${strongText(pct(result.rsuTaxNiRate))}` },
+            { label: "ESPP contribution", text: `${strongText(pct(result.esppContributionRate))} of eligible earnings, capped at 10%, giving ${strongText(money(result.esppContribution))}` },
+            { label: "ESPP discount tax", text: `${strongText(money(result.esppTaxableDiscount))} taxable discount, ${strongText(money(result.esppIncomeTax))} income tax, and ${strongText(money(result.esppNi))} employee NI when enabled` },
+            { label: "ESPP stock value after tax", text: strongText(money(result.esppStockAfterTax)) }
+          ]
+        ),
+        narrativeSection(
+          "7. Final Take-Home",
+          `The final take-home view separates salary cashflow from annualized stock value.`,
+          [
+            { label: "Salary take-home excluding RSU", text: `${strongText(money(result.salaryTakeHome))} per year, or ${strongText(money(result.salaryTakeHome / 12))} per month` },
+            { label: "Effective take-home including RSU", text: `${strongText(money(result.withRsuAnnual))} per year, or ${strongText(money(result.withRsuAnnual / 12))} per month` },
+            { label: "Method", text: "gross cash less pre-tax deductions, income tax, employee NI, post-tax deductions, ESPP contribution, and employee-paid benefits; RSU net value is then added separately for the stock-inclusive view" }
+          ]
+        ),
+        narrativeSection(
+          "8. Filing and Reconciliation Note",
+          `The HMRC filing guide is a ${emText("reconciliation aid only")}.`,
+          [
+            { label: "Use final source documents", text: "employer payslips, P60, P45, P11D, share-plan statements, and official HMRC forms should override this estimate" },
+            { label: "Avoid double counting", text: `the share scheme estimate of ${strongText(money(stockSchemeIncome))} should not be duplicated on a tax return if it is already fully included and taxed through payroll` }
+          ],
+          "This tool is for personal planning only and is not legal, tax, payroll, pension, employment, or financial advice."
+        )
       ];
 
-      document.getElementById("calculationNarrative").innerHTML = paragraphs
-        .map(narrativeParagraph)
-        .join("");
+      document.getElementById("calculationNarrative").innerHTML = sections.join("");
     }
 
     function eventShareForMonth(count, monthIndex) {
