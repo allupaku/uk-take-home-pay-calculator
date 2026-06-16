@@ -616,6 +616,39 @@
       font-weight: 700;
     }
 
+    tr.sensitivity-threshold td {
+      background: #fffaf0;
+    }
+
+    td.threshold-hit {
+      background: #e7f2ea;
+      border-color: #9fbea9;
+      font-weight: 800;
+      color: #183f27;
+    }
+
+    .sensitivity-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .sensitivity-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .threshold-swatch {
+      width: 12px;
+      height: 12px;
+      border: 1px solid #9fbea9;
+      background: #e7f2ea;
+    }
+
     .bar-track {
       height: 16px;
       background: #edf1f1;
@@ -1668,6 +1701,10 @@
 
           <div id="pensionSensitivitySection" class="subsection" style="display: none;">
             <h3>Pension Sensitivity</h3>
+            <div class="sensitivity-legend">
+              <span><span class="threshold-swatch"></span>First rate where additional-rate taxable income reaches zero</span>
+              <span><span class="threshold-swatch"></span>First rate where full Personal Allowance is restored</span>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -1675,7 +1712,6 @@
                   <th class="num">Salary annual</th>
                   <th class="num">Salary monthly</th>
                   <th class="num">With RSU annual</th>
-                  <th class="num">With RSU monthly</th>
                   <th class="num">Rate</th>
                   <th class="num">Personal Allowance</th>
                   <th class="num">Basic taxable</th>
@@ -1684,7 +1720,6 @@
                   <th class="num">Higher tax</th>
                   <th class="num">Additional taxable</th>
                   <th class="num">Additional tax</th>
-                  <th>Chart</th>
                 </tr>
               </thead>
               <tbody id="pensionSensitivity"></tbody>
@@ -2190,25 +2225,26 @@
         const result = calculate(data, { pensionRateOverride: pctValue });
         scenarios.push({ pctValue, result });
       }
-      const maxAnnual = Math.max(...scenarios.map((item) => item.result.salaryTakeHome), 0);
-      document.getElementById("pensionSensitivity").innerHTML = scenarios.map(({ pctValue, result }) => {
-        const width = maxAnnual > 0 ? Math.max(2, Math.round((result.salaryTakeHome / maxAnnual) * 100)) : 0;
+      const additionalClearedIndex = scenarios.findIndex(({ result }) => result.regularTax.additional <= 0.005);
+      const allowanceRestoredIndex = scenarios.findIndex(({ result }) => result.regularTax.personalAllowance >= tax.personalAllowance - 0.005);
+      document.getElementById("pensionSensitivity").innerHTML = scenarios.map(({ pctValue, result }, index) => {
+        const additionalCleared = index === additionalClearedIndex;
+        const allowanceRestored = index === allowanceRestoredIndex;
+        const rowClass = additionalCleared || allowanceRestored ? "sensitivity-threshold" : "";
         return row([
           td(pct(pctValue), "num"),
           td(money(result.salaryTakeHome), "num"),
           td(money(result.salaryTakeHome / 12), "num"),
           td(money(result.withRsuAnnual), "num"),
-          td(money(result.withRsuAnnual / 12), "num"),
           td(pct(result.rateWithoutRsu), "num"),
-          td(money(result.regularTax.personalAllowance), "num"),
+          td(money(result.regularTax.personalAllowance), allowanceRestored ? "num threshold-hit" : "num"),
           td(money(result.regularTax.basic), "num"),
           td(money(result.regularTax.basic * tax.basicRate), "num"),
           td(money(result.regularTax.higher), "num"),
           td(money(result.regularTax.higher * tax.higherRate), "num"),
-          td(money(result.regularTax.additional), "num"),
-          td(money(result.regularTax.additional * tax.additionalRate), "num"),
-          td(`<div class="bar-track"><div class="bar" style="width:${width}%"></div></div>`)
-        ]);
+          td(money(result.regularTax.additional), additionalCleared ? "num threshold-hit" : "num"),
+          td(money(result.regularTax.additional * tax.additionalRate), additionalCleared ? "num threshold-hit" : "num")
+        ], rowClass);
       }).join("");
     }
 
