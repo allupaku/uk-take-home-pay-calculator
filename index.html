@@ -685,6 +685,24 @@
       line-height: 1.45;
     }
 
+    .calculation-narrative {
+      display: grid;
+      gap: 7px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .calculation-narrative p {
+      margin: 0;
+      color: #243538;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .calculation-narrative strong {
+      color: var(--ink);
+    }
+
     .hmrc-table th:nth-child(1) {
       width: 120px;
     }
@@ -1362,6 +1380,11 @@
                   </thead>
                   <tbody id="hmrcRows"></tbody>
                 </table>
+              </div>
+
+              <div class="calculation-narrative annual-report-content">
+                <h3>How This Estimate Is Calculated</h3>
+                <div id="calculationNarrative"></div>
               </div>
 
               <div class="payslip-report-section">
@@ -2319,6 +2342,47 @@
       ])).join("");
     }
 
+    function narrativeParagraph(text) {
+      return `<p>${escapeHtml(text)}</p>`;
+    }
+
+    function renderCalculationNarrative(data, result) {
+      const salaryPieces = [
+        `base salary of ${money(data.baseSalary)}`,
+        `car allowance of ${money(result.carAnnual)}`,
+        `target bonus of ${money(result.bonus)}`,
+        `other taxable cash of ${money(data.otherTaxableCash)}`
+      ];
+      if (result.taxFreeCash > 0) {
+        salaryPieces.push(`tax-free cash of ${money(result.taxFreeCash)}`);
+      }
+
+      const pensionTaxText = data.pensionReducesTax
+        ? "The employee pension is treated as reducing taxable pay."
+        : "The employee pension is not treated as reducing taxable pay.";
+      const pensionNiText = data.pensionReducesNI
+        ? "It is also treated as reducing National Insurance-able pay."
+        : "It is not treated as reducing National Insurance-able pay.";
+      const stockSchemeIncome = result.rsuGrossGbp + result.esppTaxableForIncome;
+
+      const paragraphs = [
+        `The estimate starts with gross cash compensation of ${money(result.grossCash)}. This is built from ${salaryPieces.join(", ")}. Tax-free cash is included in take-home cash, but it is excluded from taxable pay and National Insurance calculations.`,
+        `Employee pension is calculated as ${num(data.pensionPct, 1)}% of base salary, giving ${money(result.pension)} for the year. Employer pension adds ${money(result.employerPension)}, so total pension added is ${money(result.totalPensionAdded)}. ${pensionTaxText} ${pensionNiText}`,
+        `Benefits in kind are not cash paid to you, but they increase taxable income in this model. The BIK total is ${money(result.totalBik)}, made up of private healthcare ${money(result.privateBik)}, employer-funded dental ${money(result.dentalEmployerBik)}, gym benefit ${money(result.gymflexBik)}, and other BIK ${money(data.otherBikAnnual)}. Employee-paid dental, Gymflex salary sacrifice, student loan, ESPP contribution, and other deductions reduce net pay separately according to their input category.`,
+        `Taxable employment income before stock is estimated as ${money(result.adjustedIncome)}. This starts with taxable cash of ${money(result.taxableCash)}, subtracts tax-reducing pension and other pre-tax deductions where selected, subtracts Gymflex salary sacrifice, and then adds taxable BIK. Personal Allowance is then tapered where adjusted income exceeds the taper threshold, leaving ${money(result.regularTax.personalAllowance)} of Personal Allowance before stock income.`,
+        `Income tax is applied across the tax bands shown in the Tax and NI Summary. Before stock income, estimated income tax is ${money(result.regularTax.tax)}. Including RSU and taxable ESPP discount, the total income tax estimate is ${money(result.totalIncomeTax)}.`,
+        `National Insurance is estimated from monthly NI-able pay of ${money(result.niablePay / 12)} for regular salary income, after any NI-reducing deductions selected in the inputs. Regular employee NI is ${money(result.regularNi)}. Stock-plan NI is added separately where the RSU and ESPP NI checkboxes are enabled, giving total employee NI of ${money(result.totalEmployeeNi)}.`,
+        `RSU income is converted from USD to GBP using the RSU FX input. The annual RSU gross value is ${money(result.rsuGrossGbp)}. Estimated RSU net take-home is ${money(result.rsuNet)} after RSU income tax of ${money(result.rsuIncomeTax)}, employee NI of ${money(result.rsuNi)}, and other RSU deductions of ${money(data.otherRsuDeductions)}. The RSU tax rate including Personal Allowance taper is ${pct(result.rsuTaxNiRate)}.`,
+        `ESPP contribution is capped at 10% of eligible earnings in this model. The contribution used is ${pct(result.esppContributionRate)} of eligible earnings, or ${money(result.esppContribution)}. The estimated ESPP taxable discount is ${money(result.esppTaxableDiscount)}; the model applies income tax of ${money(result.esppIncomeTax)} and employee NI of ${money(result.esppNi)} when those options are enabled. Estimated ESPP stock value after tax is ${money(result.esppStockAfterTax)}.`,
+        `Salary take-home excluding RSU is ${money(result.salaryTakeHome)} for the year, or ${money(result.salaryTakeHome / 12)} per month. This is gross cash less pre-tax deductions, income tax, employee NI, post-tax deductions, ESPP contribution, and employee-paid benefits. Effective take-home including annual RSU net value is ${money(result.withRsuAnnual)}, or ${money(result.withRsuAnnual / 12)} per month.`,
+        `The HMRC filing guide is a reconciliation aid only. Use your employer payslips, P60, P45, P11D, share-plan statements, and official HMRC forms as the final source, especially where benefits or stock income have already been payrolled. The share scheme estimate of ${money(stockSchemeIncome)} should not be duplicated on a return if it is already fully included and taxed through payroll.`
+      ];
+
+      document.getElementById("calculationNarrative").innerHTML = paragraphs
+        .map(narrativeParagraph)
+        .join("");
+    }
+
     function eventShareForMonth(count, monthIndex) {
       const months = eventMonths(count);
       if (!months.length) return 0;
@@ -2451,6 +2515,7 @@
       ]);
 
       renderHmrcGuide(data, result);
+      renderCalculationNarrative(data, result);
       renderPayslipReport(data, result, selectedPayslipMonthIndex);
     }
 

@@ -16,7 +16,7 @@ https://allupaku.github.io/uk-take-home-pay-calculator/
 - Optional pension sensitivity table
 - Browser-session keys for saving multiple calculation scenarios locally
 - Session history drawer with scenario summaries and a clear-all-sessions option
-- Printable annual summary, per-month payslip statements from cashflow rows, and HMRC-oriented reconciliation guide
+- Printable annual summary with calculation notes, per-month payslip statements from cashflow rows, and HMRC-oriented reconciliation guide
 
 ## Privacy
 
