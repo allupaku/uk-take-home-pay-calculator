@@ -3,23 +3,141 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UK Take Home Pay Calculator</title>
+  <title>UK Take Home Pay Calculator | Salary, BIK, RSU, ESPP</title>
+  <meta name="description" content="Estimate UK take-home pay, pension, benefits in kind, RSU vesting, and ESPP deductions with a fast interactive calculator for the 2026/27 tax year." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <link rel="canonical" href="https://allupaku.github.io/uk-take-home-pay-calculator/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="UK Take Home Pay Calculator" />
+  <meta property="og:description" content="Interactive calculator for UK salary, pension, benefits in kind, RSU, and ESPP planning." />
+  <meta property="og:url" content="https://allupaku.github.io/uk-take-home-pay-calculator/" />
+  <meta property="og:site_name" content="UK Take Home Pay Calculator" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="UK Take Home Pay Calculator" />
+  <meta name="twitter:description" content="Interactive calculator for UK salary, pension, benefits in kind, RSU, and ESPP planning." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23223136'/%3E%3Cpath d='M4 8h8M8 4v8' stroke='%23b27a2c' stroke-width='2'/%3E%3C/svg%3E" />
+  <script>
+    (() => {
+      try {
+        const theme = localStorage.getItem("ukTakeHomePayCalculator.theme.v1");
+        if (theme) document.documentElement.setAttribute("data-theme", theme);
+      } catch {
+        // Ignore theme storage failures and fall back to defaults.
+      }
+    })();
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "UK Take Home Pay Calculator",
+      "url": "https://allupaku.github.io/uk-take-home-pay-calculator/",
+      "description": "Interactive calculator for UK take-home pay, pension, benefits in kind, RSU vesting, and ESPP deductions.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      }
+    }
+  </script>
   <style>
     :root {
-      --ink: #172024;
-      --muted: #667276;
-      --line: #d6dedf;
-      --panel: #f8faf9;
+      --ink: #16203a;
+      --muted: #5f6b84;
+      --line: #d9e1f2;
+      --panel: #f7f9ff;
       --paper: #ffffff;
-      --input: #fbf9f0;
-      --primary: #223136;
-      --primary-2: #31575d;
-      --good: #e7f2ea;
-      --warn: #fbefd8;
-      --accent: #b27a2c;
-      --accent-soft: #f4ead9;
-      --shadow: 0 1px 0 rgba(23, 32, 36, 0.05);
+      --input: #fbfcff;
+      --primary: #1d4ed8;
+      --primary-2: #2f63df;
+      --good: #e9f0ff;
+      --warn: #fff4e5;
+      --accent: #dc2626;
+      --accent-soft: #fee2e2;
+      --shadow: 0 1px 0 rgba(22, 32, 58, 0.05);
+      --page-bg: #eef4ff;
+      --status-bg: #eff5ff;
+      --status-ink: #2444a0;
+      --status-line: #ccdaf9;
+      --chart-cash: #1d4ed8;
+      --chart-rsu: #2563eb;
+      --chart-espp: #f59e0b;
+      --chart-tax: #dc2626;
+      --chart-ni: #f97316;
+      --chart-pension: #7c3aed;
+      --chart-espp-contrib: #0891b2;
+      --chart-deductions: #64748b;
+      --chart-grid: #dbe5f4;
+      --chart-axis: #5f6b84;
+      --chart-zero: #1f2937;
+      --chart-net: #111827;
+    }
+
+    html[data-theme="mono"] {
+      --ink: #121212;
+      --muted: #5e5e5e;
+      --line: #d9d9d9;
+      --panel: #f5f5f5;
+      --paper: #ffffff;
+      --input: #ffffff;
+      --primary: #111111;
+      --primary-2: #333333;
+      --good: #f0f0f0;
+      --warn: #f6f6f6;
+      --accent: #111111;
+      --accent-soft: #f2f2f2;
+      --shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      --page-bg: #f2f2f2;
+      --status-bg: #ffffff;
+      --status-ink: #222222;
+      --status-line: #d9d9d9;
+      --chart-cash: #111111;
+      --chart-rsu: #3f3f46;
+      --chart-espp: #8b8b8b;
+      --chart-tax: #555555;
+      --chart-ni: #767676;
+      --chart-pension: #2a2a2a;
+      --chart-espp-contrib: #6a6a6a;
+      --chart-deductions: #9a9a9a;
+      --chart-grid: #e2e2e2;
+      --chart-axis: #5e5e5e;
+      --chart-zero: #222222;
+      --chart-net: #000000;
+    }
+
+    html[data-theme="market"] {
+      --ink: #172624;
+      --muted: #5a6e69;
+      --line: #d4e0da;
+      --panel: #f7fbf8;
+      --paper: #ffffff;
+      --input: #fbfdfc;
+      --primary: #1f6a5f;
+      --primary-2: #2f7d71;
+      --good: #e6f4eb;
+      --warn: #fff1e6;
+      --accent: #c44f45;
+      --accent-soft: #fae7e4;
+      --shadow: 0 1px 0 rgba(23, 38, 36, 0.05);
+      --page-bg: #edf4f1;
+      --status-bg: #f8fbfa;
+      --status-ink: #2f645d;
+      --status-line: #cfe0d8;
+      --chart-cash: #1f6a5f;
+      --chart-rsu: #2f7d71;
+      --chart-espp: #3b82f6;
+      --chart-tax: #c44f45;
+      --chart-ni: #ea580c;
+      --chart-pension: #7c3aed;
+      --chart-espp-contrib: #0f766e;
+      --chart-deductions: #6b7280;
+      --chart-grid: #dce7e2;
+      --chart-axis: #5a6e69;
+      --chart-zero: #243538;
+      --chart-net: #172624;
     }
 
     * {
@@ -34,7 +152,7 @@
     body {
       margin: 0;
       color: var(--ink);
-      background: #eef2f1;
+      background: var(--page-bg);
       font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
       line-height: 1.35;
@@ -43,10 +161,34 @@
     }
 
     header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
       padding: 13px 18px;
       background: var(--primary);
       color: #fff;
       border-bottom: 2px solid var(--accent);
+    }
+
+    .header-main {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .header-subtitle {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     h1 {
@@ -77,25 +219,99 @@
       margin: 0;
     }
 
-    .toolbar {
+    .status-toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 90;
+      max-width: min(360px, calc(100vw - 24px));
+      padding: 9px 12px;
+      border: 1px solid var(--status-line);
+      border-radius: 8px;
+      background: var(--status-bg);
+      color: var(--status-ink);
+      box-shadow: 0 12px 24px rgba(22, 32, 58, 0.14);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .status-toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .theme-switcher {
+      display: grid;
+      gap: 6px;
+      justify-items: start;
+    }
+
+    .theme-switcher-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .theme-options {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .theme-option {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      padding: 10px;
+      gap: 7px;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid #c7d1d3;
       background: #fff;
-      border: 1px solid var(--line);
-    }
-
-    .toolbar > * {
-      min-width: 0;
-    }
-
-    .toolbar .note {
-      color: var(--muted);
+      color: var(--primary-2);
+      border-radius: 999px;
       font-size: 12px;
+      font-weight: 700;
+    }
+
+    .theme-option.is-active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .theme-option:hover {
+      background: #f7faf8;
+    }
+
+    .theme-option.is-active:hover {
+      background: #172024;
+    }
+
+    .theme-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.14);
+      flex: 0 0 auto;
+    }
+
+    .theme-swatch-primary {
+      background: linear-gradient(90deg, #1d4ed8 0 33%, #dc2626 33% 66%, #f3c94d 66% 100%);
+    }
+
+    .theme-swatch-mono {
+      background: linear-gradient(135deg, #111111 0 50%, #ffffff 50% 100%);
+    }
+
+    .theme-swatch-market {
+      background: linear-gradient(135deg, #1f6a5f 0 50%, #c44f45 50% 100%);
     }
 
     .mobile-actionbar {
@@ -103,24 +319,92 @@
     }
 
     .session-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-end;
+      display: grid;
+      gap: 10px;
+      align-items: stretch;
     }
 
     .drawer-only {
       display: none;
     }
 
-    .session-field {
-      display: inline-flex;
+    .session-drawer-head {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      color: var(--muted);
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .session-drawer-head h2 {
+      margin: 0;
+    }
+
+    .control-card {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f9fbfb;
+    }
+
+    .control-card-title {
+      color: var(--ink);
       font-size: 12px;
       font-weight: 700;
+    }
+
+    .control-card-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .button-cluster {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .button-cluster button {
+      width: 100%;
+    }
+
+    .workspace-sidebar {
+      display: grid;
+      gap: 14px;
+      min-height: 100%;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .workspace-sidebar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .workspace-sidebar-head h3 {
+      margin: 0;
+    }
+
+    .session-field {
+      display: block;
+      min-width: 0;
     }
 
     .session-history {
@@ -202,7 +486,7 @@
       border: 1px solid var(--primary);
       background: var(--primary);
       color: #fff;
-      border-radius: 2px;
+      border-radius: 6px;
       padding: 8px 10px;
       font-weight: 700;
       cursor: pointer;
@@ -221,18 +505,35 @@
       background: #f6f8f8;
     }
 
+    .header-settings {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .header-settings:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
     .grid {
       display: grid;
-      grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+      grid-template-columns: minmax(440px, 520px) minmax(0, 1fr);
       gap: 12px;
       align-items: start;
+      min-width: 0;
+    }
+
+    .sidebar-stack {
+      display: grid;
+      gap: 12px;
+      align-self: start;
       min-width: 0;
     }
 
     .panel {
       background: var(--paper);
       border: 1px solid var(--line);
-      border-radius: 0;
+      border-radius: 6px;
       box-shadow: var(--shadow);
       min-width: 0;
       overflow: visible;
@@ -240,6 +541,37 @@
 
     .inputs-panel {
       align-self: start;
+    }
+
+    .workspace-panel {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 60;
+      width: min(92vw, 408px);
+      min-width: 0;
+      overflow-y: auto;
+      background: var(--paper);
+      border-right: 1px solid var(--line);
+      border-radius: 0;
+      box-shadow: 18px 0 32px rgba(23, 32, 36, 0.22);
+      transform: translateX(-100%);
+      transition: transform 180ms ease;
+    }
+
+    .workspace-panel > .panel-title {
+      display: none;
+    }
+
+    .workspace-panel > .panel-body {
+      padding: 0;
+    }
+
+    body.drawer-session-open .workspace-panel {
+      transform: translateX(0);
+    }
+
+    body.drawer-session-open {
+      overflow: hidden;
     }
 
     .panel > .panel-title {
@@ -257,6 +589,129 @@
       padding: 12px;
     }
 
+    .panel-title-stack {
+      display: grid;
+      gap: 2px;
+    }
+
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .inputs-shell {
+      display: grid;
+      gap: 12px;
+    }
+
+    .inputs-lead {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .inputs-lead strong {
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .input-tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      align-items: flex-end;
+      overflow-x: auto;
+      padding: 2px 0 0;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+
+    .input-tab {
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 82px;
+      min-height: 42px;
+      padding: 10px 14px;
+      border: 1px solid #c7d1d3;
+      border-bottom: 0;
+      border-radius: 4px 4px 0 0;
+      background: #f3f6fb;
+      color: var(--primary-2);
+      margin: 0;
+    }
+
+    .input-tab:hover {
+      background: #ffffff;
+    }
+
+    .input-tab.is-active {
+      border-color: var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 800;
+      box-shadow: 0 -1px 0 #ffffff;
+    }
+
+    .input-tab-panel {
+      display: none;
+      gap: 12px;
+      min-width: 0;
+      padding-top: 2px;
+    }
+
+    .input-tab-panel.is-active {
+      display: grid;
+    }
+
+    .input-section-head {
+      display: grid;
+      gap: 4px;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .field-table {
+      display: grid;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      min-width: 0;
+      background: #fff;
+    }
+
+    .field-table-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(136px, 156px);
+      gap: 8px;
+      align-items: center;
+      padding: 11px 14px;
+      background: #f7f9f8;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .field-table-head .num {
+      text-align: right;
+    }
+
+    .fields {
+      display: grid;
+      gap: 0;
+      min-width: 0;
+    }
+
     .subsection {
       margin-top: 12px;
       padding-top: 12px;
@@ -264,21 +719,41 @@
       min-width: 0;
     }
 
-    .fields {
-      display: grid;
-      gap: 4px;
-    }
-
     .field-row {
       display: grid;
-      grid-template-columns: minmax(160px, 1fr) minmax(120px, 150px) minmax(74px, 95px);
-      gap: 8px;
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr) minmax(136px, 156px);
+      gap: 12px;
+      align-items: start;
       min-width: 0;
-      padding: 4px 6px;
-      border-left: 2px solid transparent;
+      padding: 11px 14px;
+      border-left: 3px solid transparent;
+      border-bottom: 1px solid #edf1f1;
       background: transparent;
       transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+
+    .field-copy {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .field-row > label,
+    .field-row > input,
+    .field-row > select,
+    .field-row > .unit,
+    .field-copy > label,
+    .field-copy > .unit {
+      min-width: 0;
+    }
+
+    .field-row > input,
+    .field-row > select {
+      align-self: center;
+    }
+
+    .fields .field-row:last-child {
+      border-bottom: 0;
     }
 
     .field-row:hover,
@@ -353,8 +828,11 @@
     }
 
     .unit {
+      display: block;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1.35;
+      text-align: left;
     }
 
     input[type="number"],
@@ -363,10 +841,10 @@
       min-height: 34px;
       border: 1px solid #c7d1d3;
       background: var(--input);
-      border-radius: 2px;
+      border-radius: 6px;
       padding: 7px 8px;
       color: var(--ink);
-      text-align: right;
+      text-align: left;
       font: inherit;
     }
 
@@ -383,7 +861,7 @@
       width: 108px;
       min-height: 34px;
       background: #fff;
-      text-align: center;
+      text-align: left;
       text-transform: uppercase;
       letter-spacing: 0;
       font-weight: 700;
@@ -406,15 +884,63 @@
       grid-template-columns: 1fr auto;
       gap: 8px;
       align-items: center;
-      margin-top: 8px;
-      padding: 6px 8px;
-      border-left: 2px solid transparent;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-left: 3px solid transparent;
+      border-radius: 6px;
+      background: #fff;
       transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+
+    .toggles {
+      display: grid;
+      gap: 8px;
     }
 
     .summary-stack {
       display: grid;
       gap: 12px;
+    }
+
+    .summary-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .summary-main {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .info-rail {
+      position: sticky;
+      top: 16px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .info-card {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: #fffaf5;
+      color: #403224;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .info-card h3 {
+      margin: 0 0 6px;
+      color: var(--ink);
+    }
+
+    .info-card p {
+      margin: 0;
     }
 
     .summary-guide {
@@ -611,6 +1137,27 @@
       text-align: right;
     }
 
+    th.group-head {
+      background: #2f474d;
+      text-align: center;
+      border-bottom-color: rgba(255, 255, 255, 0.28);
+    }
+
+    tr.subhead th {
+      background: #334c52;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    #pensionSensitivitySection tr.subhead th {
+      font-size: 10px;
+      letter-spacing: 0;
+    }
+
+    #pensionSensitivity td {
+      font-size: 12px;
+    }
+
     tr.total td {
       background: var(--good);
       font-weight: 700;
@@ -618,6 +1165,15 @@
 
     tr.sensitivity-threshold td {
       background: #fffaf0;
+    }
+
+    tr.sensitivity-current td {
+      background: #fffdf7;
+    }
+
+    tr.sensitivity-current td:first-child {
+      border-left: 4px solid var(--accent);
+      font-weight: 800;
     }
 
     td.threshold-hit {
@@ -670,7 +1226,7 @@
       border-left: 4px solid var(--accent);
       border-radius: 4px;
       color: #4e3a14;
-      margin-top: 10px;
+      margin-top: 0;
     }
 
     .chart-controls {
@@ -692,7 +1248,7 @@
       min-height: 34px;
       border: 1px solid #c7d1d3;
       background: #fff;
-      border-radius: 2px;
+      border-radius: 6px;
       padding: 7px 8px;
       color: var(--ink);
       font: inherit;
@@ -703,7 +1259,7 @@
       min-height: 330px;
       border: 1px solid var(--line);
       background: #fff;
-      border-radius: 0;
+      border-radius: 6px;
       padding: 8px;
       min-width: 0;
       overflow: hidden;
@@ -716,11 +1272,100 @@
       height: 320px;
     }
 
+    .chart-axis,
+    .chart-grid line {
+      shape-rendering: crispEdges;
+    }
+
+    .chart-axis text,
+    .chart-grid-label {
+      fill: var(--chart-axis);
+      font-size: 11px;
+    }
+
+    .chart-grid line {
+      stroke: var(--chart-grid);
+      stroke-width: 1;
+    }
+
+    .chart-axis path,
+    .chart-axis line {
+      stroke: none;
+    }
+
+    .chart-zero-line {
+      stroke: var(--chart-zero);
+      stroke-width: 1.2;
+    }
+
+    .chart-net-line {
+      fill: none;
+      stroke: var(--chart-net);
+      stroke-width: 2.2;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .chart-net-dot {
+      fill: var(--chart-net);
+    }
+
+    .chart-hit-zone {
+      fill: transparent;
+      cursor: default;
+    }
+
     .chart-status {
       margin-top: 6px;
       min-height: 17px;
       font-size: 12px;
       color: var(--muted);
+    }
+
+    .collapsible-view {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .collapsible-view summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      color: var(--primary);
+      background: #f7f9f8;
+      font-weight: 700;
+      list-style: none;
+    }
+
+    .collapsible-view summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .collapsible-view summary::after {
+      content: "+";
+      display: inline-grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #cbd5d6;
+      color: var(--primary-2);
+      background: #fff;
+      font-weight: 800;
+    }
+
+    .collapsible-view[open] summary::after {
+      content: "-";
+    }
+
+    .collapsible-body {
+      padding: 10px;
+      border-top: 1px solid var(--line);
     }
 
     .legend {
@@ -914,6 +1559,14 @@
       display: none;
     }
 
+    body.drawer-session-open .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: block;
+      background: rgba(23, 32, 36, 0.38);
+    }
+
     .history-drawer {
       position: fixed;
       inset: 0 0 0 auto;
@@ -973,9 +1626,30 @@
       width: auto;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     @media (max-width: 1050px) {
       .grid {
         grid-template-columns: 1fr;
+      }
+
+      .summary-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .info-rail {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .summary-columns {
@@ -992,21 +1666,12 @@
         padding: 10px;
       }
 
-      .toolbar {
-        display: contents;
-      }
-
-      .toolbar > .note,
-      #storageStatus {
-        display: none;
-      }
-
       .mobile-actionbar {
         position: sticky;
         top: 0;
         z-index: 30;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 8px;
         margin-bottom: 10px;
         padding: 8px;
@@ -1029,34 +1694,18 @@
         display: block;
       }
 
-      .session-controls {
-        position: fixed;
-        inset: 0 0 0 auto;
-        z-index: 60;
-        width: min(92vw, 390px);
-        min-width: 0;
-        padding: 14px;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: stretch;
-        justify-content: flex-start;
-        gap: 10px;
-        overflow-y: auto;
-        background: #fff;
-        border-left: 1px solid var(--line);
-        box-shadow: -18px 0 32px rgba(23, 32, 36, 0.22);
-        transform: translateX(100%);
-        transition: transform 180ms ease;
-      }
-
-      body.drawer-session-open .session-controls {
-        transform: translateX(0);
-      }
-
       .session-controls > *,
       .session-field,
-      .session-controls button {
+      .session-controls button,
+      .control-row {
+        width: 100%;
+      }
+
+      .control-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button-cluster button {
         width: 100%;
       }
 
@@ -1077,6 +1726,15 @@
         box-shadow: 18px 0 32px rgba(23, 32, 36, 0.22);
         transform: translateX(-100%);
         transition: transform 180ms ease;
+      }
+
+      .workspace-panel {
+        inset: 0 0 0 auto;
+        width: min(94vw, 430px);
+        border-right: 0;
+        border-left: 1px solid var(--line);
+        box-shadow: -18px 0 32px rgba(23, 32, 36, 0.22);
+        transform: translateX(100%);
       }
 
       body.drawer-inputs-open .inputs-panel {
@@ -1105,6 +1763,32 @@
         padding: 8px;
       }
 
+      .field-table-head {
+        display: none;
+      }
+
+      .input-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        overflow-x: visible;
+        border-bottom: 0;
+      }
+
+      .input-tab {
+        margin: 0;
+        border-bottom: 1px solid #c7d1d3;
+        border-radius: 4px;
+      }
+
+      .input-tab.is-active {
+        border-color: var(--primary);
+      }
+
+      .unit {
+        text-align: left;
+      }
+
       .outputs {
         grid-template-columns: 1fr;
       }
@@ -1118,6 +1802,10 @@
       }
 
       .summary-guide {
+        grid-template-columns: 1fr;
+      }
+
+      .info-rail {
         grid-template-columns: 1fr;
       }
 
@@ -1146,6 +1834,12 @@
       .report-meta {
         text-align: left;
       }
+
+      .status-toast {
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100vw - 20px);
+      }
     }
 
     @media print {
@@ -1166,8 +1860,16 @@
         line-height: 1.25;
       }
 
+      *,
+      *::before,
+      *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+        filter: none !important;
+      }
+
       header,
-      .toolbar,
+      .status-toast,
       .mobile-actionbar,
       .inputs-panel,
       .drawer-overlay,
@@ -1259,310 +1961,445 @@
 </head>
 <body>
   <header>
-    <h1>UK Take Home Pay Calculator</h1>
+    <div class="header-main">
+      <h1>UK Take Home Pay Calculator</h1>
+      <p class="header-subtitle">2026/27 England, Wales, and Northern Ireland assumptions. Amounts are GBP unless marked USD.</p>
+    </div>
+    <div class="header-actions">
+      <button id="open-settings" class="header-settings" type="button">Settings</button>
+    </div>
   </header>
 
   <main class="app">
-    <div class="toolbar">
-      <div class="note">Defaults use 2026/27 England, Wales and Northern Ireland assumptions.</div>
-      <div class="session-controls">
-        <div class="drawer-only"><h2>Session</h2></div>
-        <button id="close-session" class="secondary drawer-only" type="button">Close Session</button>
-        <label class="session-field" for="sessionKeyInput">
-          Key
-          <input id="sessionKeyInput" class="session-key-input" type="text" maxlength="8" autocomplete="off" spellcheck="false" />
-        </label>
-        <label class="session-field" for="sessionKeySelect">
-          Load
-          <select id="sessionKeySelect" class="session-select"></select>
-        </label>
-        <button id="load-session" class="secondary" type="button">Load Key</button>
-        <button id="new-session" type="button">New Session</button>
-        <button id="copy-link" type="button">Copy Link</button>
-        <button id="clear-saved" class="secondary" type="button">Clear Key</button>
-        <button id="open-history" class="secondary" type="button">Saved Sessions</button>
-        <button id="reset" class="secondary" type="button">Reset</button>
-      </div>
-      <div id="storageStatus" class="note">Session inputs save in this browser tab.</div>
-    </div>
+    <div id="storageStatus" class="status-toast" aria-live="polite" aria-atomic="true"></div>
+    <input id="importSessionFile" class="visually-hidden" type="file" accept="application/json,.json" hidden />
 
     <div class="mobile-actionbar" aria-label="Mobile controls">
       <button id="open-inputs" type="button">Edit Inputs</button>
-      <button id="open-session" class="secondary" type="button">Session</button>
-      <div class="mobile-hint">Open inputs to adjust the calculation. Changes update the summary immediately.</div>
+      <div class="mobile-hint">Settings, theme, share links, and JSON import/export live in the header drawer.</div>
     </div>
 
     <div class="grid">
-      <section class="panel inputs-panel">
+      <div class="sidebar-stack">
+        <aside class="panel workspace-panel">
+          <div class="panel-title">
+            <h2>Scenario</h2>
+          </div>
+          <div class="panel-body">
+            <div class="workspace-sidebar" aria-label="Scenario workspace">
+              <div class="workspace-sidebar-head">
+                <h3>Saved Sessions and Files</h3>
+                <button id="open-history" class="secondary" type="button">History</button>
+              </div>
+              <p class="section-copy">Keep local sessions, copy a portable share link, or move calculations in and out with JSON.</p>
+              <div class="theme-switcher" aria-label="Theme selector">
+                <span class="theme-switcher-label">Theme</span>
+                <div class="theme-options" role="group" aria-label="Color theme">
+                  <button class="theme-option is-active" type="button" data-theme-value="primary" aria-pressed="true">
+                    <span class="theme-swatch theme-swatch-primary" aria-hidden="true"></span>
+                    <span>Primary</span>
+                  </button>
+                  <button class="theme-option" type="button" data-theme-value="mono" aria-pressed="false">
+                    <span class="theme-swatch theme-swatch-mono" aria-hidden="true"></span>
+                    <span>Mono</span>
+                  </button>
+                  <button class="theme-option" type="button" data-theme-value="market" aria-pressed="false">
+                    <span class="theme-swatch theme-swatch-market" aria-hidden="true"></span>
+                    <span>Market</span>
+                  </button>
+                </div>
+              </div>
+              <div class="session-controls">
+                <div class="session-drawer-head">
+                  <h2>Session &amp; Actions</h2>
+                  <button id="close-session" class="secondary" type="button">Close</button>
+                </div>
+                <section class="control-card control-card-key" aria-label="Active session">
+                  <div class="control-card-title">Active session key</div>
+                  <div class="control-card-copy">Use this key to reopen the current scenario in this browser session.</div>
+                  <div class="control-row">
+                    <label class="session-field" for="sessionKeyInput">
+                      <span class="visually-hidden">Active session key</span>
+                      <input id="sessionKeyInput" class="session-key-input" type="text" maxlength="8" autocomplete="off" spellcheck="false" />
+                    </label>
+                    <button id="load-session" type="button">Load</button>
+                  </div>
+                </section>
+                <section class="control-card control-card-saved" aria-label="Saved local scenarios">
+                  <div class="control-card-title">Saved locally</div>
+                  <div class="control-card-copy">Recent scenarios saved in this browser session.</div>
+                  <div class="control-row">
+                    <label class="session-field" for="sessionKeySelect">
+                      <span class="visually-hidden">Saved session keys</span>
+                      <select id="sessionKeySelect" class="session-select"></select>
+                    </label>
+                    <button id="new-session" class="secondary" type="button">New</button>
+                  </div>
+                </section>
+                <section class="control-card control-card-actions" aria-label="Scenario actions">
+                  <div class="control-card-title">Actions</div>
+                  <div class="control-card-copy">Portable copies use share links or JSON export.</div>
+                  <div class="button-cluster">
+                    <button id="copy-link" class="secondary" type="button">Copy Share Link</button>
+                    <button id="export-session" class="secondary" type="button">Export JSON</button>
+                    <button id="import-session" class="secondary" type="button">Import JSON</button>
+                    <button id="reset" class="secondary" type="button">Reset</button>
+                    <button id="clear-saved" class="secondary" type="button">Delete Session</button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <section class="panel inputs-panel">
         <div class="panel-title">
-          <h2>Inputs</h2>
+          <div class="panel-title-stack">
+            <h2>Inputs</h2>
+            <span class="panel-subtitle">Organised by pay, benefits in kind, RSU, and ESPP.</span>
+          </div>
           <button id="close-inputs" class="secondary drawer-only" type="button">Close</button>
         </div>
         <div class="panel-body">
-          <h3>Cash Compensation</h3>
-          <div class="fields">
-            <label for="baseSalary">Base salary</label>
-            <input id="baseSalary" type="number" value="35000" step="1000" />
-            <span class="unit">GBP annual</span>
-
-            <label for="carAllowanceMonthly">Car allowance</label>
-            <input id="carAllowanceMonthly" type="number" value="0" step="100" />
-            <span class="unit">GBP monthly</span>
-
-            <label for="targetBonusPct">Target bonus</label>
-            <input id="targetBonusPct" type="number" value="5" step="0.5" />
-            <span class="unit">% of base</span>
-
-            <label for="pensionPct">Pension contribution</label>
-            <input id="pensionPct" type="number" value="5" step="0.5" />
-            <span class="unit">% of base, employee</span>
-
-            <label for="employerPensionPct">Employer pension contribution</label>
-            <input id="employerPensionPct" type="number" value="0" step="0.5" />
-            <span class="unit">% of base, employer</span>
-
-            <label for="employerPensionAnnual">Employer pension extra</label>
-            <input id="employerPensionAnnual" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-
-            <label for="otherTaxableCash">Other taxable cash</label>
-            <input id="otherTaxableCash" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-
-            <label for="otherTaxFreeCash">Other tax-free cash</label>
-            <input id="otherTaxFreeCash" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-
-            <label for="otherPreTaxDeductions">Other pre-tax deductions</label>
-            <input id="otherPreTaxDeductions" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-
-            <label for="otherPostTaxDeductions">Other post-tax deductions</label>
-            <input id="otherPostTaxDeductions" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-
-            <label for="studentLoanDeductions">Student loan / payroll deductions</label>
-            <input id="studentLoanDeductions" type="number" value="0" step="100" />
-            <span class="unit">GBP annual</span>
-          </div>
-          <div class="check-row">
-            <label for="pensionReducesTax">Pension reduces taxable pay</label>
-            <input id="pensionReducesTax" type="checkbox" checked />
-          </div>
-          <div class="check-row">
-            <label for="pensionReducesNI">Pension reduces NI-able pay</label>
-            <input id="pensionReducesNI" type="checkbox" checked />
-          </div>
-          <div class="check-row">
-            <label for="showPensionSensitivity">Show pension sensitivity</label>
-            <input id="showPensionSensitivity" type="checkbox" />
-          </div>
-
-          <div class="subsection">
-            <h3>Benefits In Kind and Deductions</h3>
-            <div class="fields">
-              <label for="privateHealthBikAnnual">Private healthcare BIK</label>
-              <input id="privateHealthBikAnnual" type="number" value="0" step="50" />
-              <span class="unit">GBP annual</span>
-
-              <label for="privateHealthMonths">Private healthcare months</label>
-              <input id="privateHealthMonths" type="number" value="12" step="1" min="0" max="12" />
-              <span class="unit">0-12</span>
-
-              <label for="dentalEmployeeMonthly">Dental employee contribution</label>
-              <input id="dentalEmployeeMonthly" type="number" value="0" step="5" />
-              <span class="unit">GBP monthly net</span>
-
-              <label for="dentalMonths">Dental months</label>
-              <input id="dentalMonths" type="number" value="12" step="1" min="0" max="12" />
-              <span class="unit">0-12</span>
-
-              <label for="dentalEmployerBikAnnual">Dental employer BIK</label>
-              <input id="dentalEmployerBikAnnual" type="number" value="0" step="50" />
-              <span class="unit">GBP annual</span>
-
-              <label for="gymflexBikAnnual">Gymflex taxable BIK</label>
-              <input id="gymflexBikAnnual" type="number" value="0" step="50" />
-              <span class="unit">GBP annual</span>
-
-              <label for="gymflexSacrificeMonthly">Gymflex salary sacrifice</label>
-              <input id="gymflexSacrificeMonthly" type="number" value="0" step="10" />
-              <span class="unit">GBP monthly</span>
-
-              <label for="gymflexMonths">Gymflex months</label>
-              <input id="gymflexMonths" type="number" value="12" step="1" min="0" max="12" />
-              <span class="unit">0-12</span>
-
-              <label for="otherBikAnnual">Other taxable BIK</label>
-              <input id="otherBikAnnual" type="number" value="0" step="50" />
-              <span class="unit">GBP annual</span>
+          <div class="inputs-shell">
+            <div class="inputs-lead">
+              <strong>Live model inputs</strong>
+              <span>Update pay, benefits, and stock-plan assumptions here. The live summary refreshes as you type.</span>
             </div>
-          </div>
-
-          <div class="subsection">
-            <h3>RSU</h3>
-            <div class="fields">
-              <label for="rsuVestUsd">RSU vest value</label>
-              <input id="rsuVestUsd" type="number" value="0" step="1000" />
-              <span class="unit">USD per vest</span>
-
-              <label for="rsuVests">Number of vests</label>
-              <input id="rsuVests" type="number" value="4" step="1" min="0" />
-              <span class="unit">per year</span>
-
-              <label for="rsuFx">RSU FX rate</label>
-              <input id="rsuFx" type="number" value="1.25" step="0.01" />
-              <span class="unit">USD per GBP</span>
-
-              <label for="otherRsuDeductions">Other RSU deductions</label>
-              <input id="otherRsuDeductions" type="number" value="0" step="100" />
-              <span class="unit">GBP annual</span>
+            <div class="input-tabs" role="tablist" aria-label="Input sections">
+              <button id="tab-pay" class="input-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="panel-pay" data-tab="pay">Pay</button>
+              <button id="tab-bik" class="input-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-bik" data-tab="bik">BIK</button>
+              <button id="tab-rsu" class="input-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-rsu" data-tab="rsu">RSU</button>
+              <button id="tab-espp" class="input-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-espp" data-tab="espp">ESPP</button>
             </div>
-            <div class="check-row">
-              <label for="rsuNiApplies">Employee NI applies to RSU</label>
-              <input id="rsuNiApplies" type="checkbox" checked />
-            </div>
-          </div>
 
-          <div class="subsection">
-            <h3>ESPP</h3>
-            <div class="fields">
-              <label for="esppContributionPct">ESPP contribution</label>
-              <input id="esppContributionPct" type="number" value="0" step="0.5" />
-              <span class="unit">% eligible pay</span>
+            <section id="panel-pay" class="input-tab-panel is-active" role="tabpanel" aria-labelledby="tab-pay" data-tab-panel="pay">
+              <div class="input-section-head">
+                <h3>Cash Compensation and Pension</h3>
+                <p class="section-copy">Annual cash pay, payroll deductions, and pension treatment.</p>
+              </div>
+              <div class="field-table">
+                <div class="field-table-head">
+                  <span>Input</span>
+                  <span class="num">Value</span>
+                </div>
+                <div class="fields">
+                  <label for="baseSalary">Base salary</label>
+                  <input id="baseSalary" type="number" value="35000" step="1000" />
+                  <span class="unit">GBP annual</span>
 
-              <label for="esppPeriods">Purchase periods</label>
-              <input id="esppPeriods" type="number" value="2" step="1" min="0" />
-              <span class="unit">per year</span>
+                  <label for="carAllowanceMonthly">Car allowance</label>
+                  <input id="carAllowanceMonthly" type="number" value="0" step="100" />
+                  <span class="unit">GBP monthly</span>
 
-              <label for="esppDiscountPct">ESPP discount</label>
-              <input id="esppDiscountPct" type="number" value="15" step="0.5" />
-              <span class="unit">%</span>
+                  <label for="targetBonusPct">Target bonus</label>
+                  <input id="targetBonusPct" type="number" value="5" step="0.5" />
+                  <span class="unit">% of base</span>
 
-              <label for="esppStartFmv">Offering start FMV</label>
-              <input id="esppStartFmv" type="number" value="0" step="0.01" />
-              <span class="unit">USD/share</span>
+                  <label for="pensionPct">Pension contribution</label>
+                  <input id="pensionPct" type="number" value="5" step="0.5" />
+                  <span class="unit">% of base, employee</span>
 
-              <label for="esppPurchaseFmv">Purchase-date FMV</label>
-              <input id="esppPurchaseFmv" type="number" value="0" step="0.01" />
-              <span class="unit">USD/share</span>
+                  <label for="employerPensionPct">Employer pension contribution</label>
+                  <input id="employerPensionPct" type="number" value="0" step="0.5" />
+                  <span class="unit">% of base, employer</span>
 
-              <label for="esppFx">ESPP FX rate</label>
-              <input id="esppFx" type="number" value="1.25" step="0.01" />
-              <span class="unit">USD per GBP</span>
-            </div>
-            <div class="check-row">
-              <label for="esppTaxApplies">Income tax applies to ESPP discount</label>
-              <input id="esppTaxApplies" type="checkbox" checked />
-            </div>
-            <div class="check-row">
-              <label for="esppNiApplies">Employee NI applies to ESPP discount</label>
-              <input id="esppNiApplies" type="checkbox" checked />
-            </div>
+                  <label for="employerPensionAnnual">Employer pension extra</label>
+                  <input id="employerPensionAnnual" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="otherTaxableCash">Other taxable cash</label>
+                  <input id="otherTaxableCash" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="otherTaxFreeCash">Other tax-free cash</label>
+                  <input id="otherTaxFreeCash" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="otherPreTaxDeductions">Other pre-tax deductions</label>
+                  <input id="otherPreTaxDeductions" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="otherPostTaxDeductions">Other post-tax deductions</label>
+                  <input id="otherPostTaxDeductions" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="studentLoanDeductions">Student loan / payroll deductions</label>
+                  <input id="studentLoanDeductions" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+                </div>
+              </div>
+              <div class="toggles">
+                <div class="check-row">
+                  <label for="pensionReducesTax">Pension reduces taxable pay</label>
+                  <input id="pensionReducesTax" type="checkbox" checked />
+                </div>
+                <div class="check-row">
+                  <label for="pensionReducesNI">Pension reduces NI-able pay</label>
+                  <input id="pensionReducesNI" type="checkbox" checked />
+                </div>
+                <div class="check-row">
+                  <label for="showPensionSensitivity">Show pension sensitivity</label>
+                  <input id="showPensionSensitivity" type="checkbox" />
+                </div>
+              </div>
+            </section>
+
+            <section id="panel-bik" class="input-tab-panel" role="tabpanel" aria-labelledby="tab-bik" data-tab-panel="bik">
+              <div class="input-section-head">
+                <h3>Benefits In Kind and Benefit Deductions</h3>
+                <p class="section-copy">Private health, dental, Gymflex, and other taxable benefits.</p>
+              </div>
+              <div class="field-table">
+                <div class="field-table-head">
+                  <span>Input</span>
+                  <span class="num">Value</span>
+                </div>
+                <div class="fields">
+                  <label for="privateHealthBikAnnual">Private healthcare BIK</label>
+                  <input id="privateHealthBikAnnual" type="number" value="0" step="50" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="privateHealthMonths">Private healthcare months</label>
+                  <input id="privateHealthMonths" type="number" value="12" step="1" min="0" max="12" />
+                  <span class="unit">0-12</span>
+
+                  <label for="dentalEmployeeMonthly">Dental employee contribution</label>
+                  <input id="dentalEmployeeMonthly" type="number" value="0" step="5" />
+                  <span class="unit">GBP monthly net</span>
+
+                  <label for="dentalMonths">Dental months</label>
+                  <input id="dentalMonths" type="number" value="12" step="1" min="0" max="12" />
+                  <span class="unit">0-12</span>
+
+                  <label for="dentalEmployerBikAnnual">Dental employer BIK</label>
+                  <input id="dentalEmployerBikAnnual" type="number" value="0" step="50" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="gymflexBikAnnual">Gymflex taxable BIK</label>
+                  <input id="gymflexBikAnnual" type="number" value="0" step="50" />
+                  <span class="unit">GBP annual</span>
+
+                  <label for="gymflexSacrificeMonthly">Gymflex salary sacrifice</label>
+                  <input id="gymflexSacrificeMonthly" type="number" value="0" step="10" />
+                  <span class="unit">GBP monthly</span>
+
+                  <label for="gymflexMonths">Gymflex months</label>
+                  <input id="gymflexMonths" type="number" value="12" step="1" min="0" max="12" />
+                  <span class="unit">0-12</span>
+
+                  <label for="otherBikAnnual">Other taxable BIK</label>
+                  <input id="otherBikAnnual" type="number" value="0" step="50" />
+                  <span class="unit">GBP annual</span>
+                </div>
+              </div>
+            </section>
+
+            <section id="panel-rsu" class="input-tab-panel" role="tabpanel" aria-labelledby="tab-rsu" data-tab-panel="rsu">
+              <div class="input-section-head">
+                <h3>RSU Inputs</h3>
+                <p class="section-copy">Model gross vest value, FX, and withholding assumptions.</p>
+              </div>
+              <div class="field-table">
+                <div class="field-table-head">
+                  <span>Input</span>
+                  <span class="num">Value</span>
+                </div>
+                <div class="fields">
+                  <label for="rsuVestUsd">RSU vest value</label>
+                  <input id="rsuVestUsd" type="number" value="0" step="1000" />
+                  <span class="unit">USD per vest</span>
+
+                  <label for="rsuVests">Number of vests</label>
+                  <input id="rsuVests" type="number" value="4" step="1" min="0" />
+                  <span class="unit">per year</span>
+
+                  <label for="rsuFx">RSU FX rate</label>
+                  <input id="rsuFx" type="number" value="1.25" step="0.01" />
+                  <span class="unit">USD per GBP</span>
+
+                  <label for="otherRsuDeductions">Other RSU deductions</label>
+                  <input id="otherRsuDeductions" type="number" value="0" step="100" />
+                  <span class="unit">GBP annual</span>
+                </div>
+              </div>
+              <div class="toggles">
+                <div class="check-row">
+                  <label for="rsuNiApplies">Employee NI applies to RSU</label>
+                  <input id="rsuNiApplies" type="checkbox" checked />
+                </div>
+              </div>
+            </section>
+
+            <section id="panel-espp" class="input-tab-panel" role="tabpanel" aria-labelledby="tab-espp" data-tab-panel="espp">
+              <div class="input-section-head">
+                <h3>ESPP Inputs</h3>
+                <p class="section-copy">Contribution rate, purchase assumptions, and discount taxation.</p>
+              </div>
+              <div class="field-table">
+                <div class="field-table-head">
+                  <span>Input</span>
+                  <span class="num">Value</span>
+                </div>
+                <div class="fields">
+                  <label for="esppContributionPct">ESPP contribution</label>
+                  <input id="esppContributionPct" type="number" value="0" step="0.5" />
+                  <span class="unit">% eligible pay</span>
+
+                  <label for="esppPeriods">Purchase periods</label>
+                  <input id="esppPeriods" type="number" value="2" step="1" min="0" />
+                  <span class="unit">per year</span>
+
+                  <label for="esppDiscountPct">ESPP discount</label>
+                  <input id="esppDiscountPct" type="number" value="15" step="0.5" />
+                  <span class="unit">%</span>
+
+                  <label for="esppStartFmv">Offering start FMV</label>
+                  <input id="esppStartFmv" type="number" value="0" step="0.01" />
+                  <span class="unit">USD/share</span>
+
+                  <label for="esppPurchaseFmv">Purchase-date FMV</label>
+                  <input id="esppPurchaseFmv" type="number" value="0" step="0.01" />
+                  <span class="unit">USD/share</span>
+
+                  <label for="esppFx">ESPP FX rate</label>
+                  <input id="esppFx" type="number" value="1.25" step="0.01" />
+                  <span class="unit">USD per GBP</span>
+                </div>
+              </div>
+              <div class="toggles">
+                <div class="check-row">
+                  <label for="esppTaxApplies">Income tax applies to ESPP discount</label>
+                  <input id="esppTaxApplies" type="checkbox" checked />
+                </div>
+                <div class="check-row">
+                  <label for="esppNiApplies">Employee NI applies to ESPP discount</label>
+                  <input id="esppNiApplies" type="checkbox" checked />
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </section>
+      </div>
 
       <section class="panel summary-panel">
         <div class="panel-title"><h2>Live Summary</h2></div>
         <div class="panel-body">
-          <div class="summary-stack">
-            <div class="summary-guide">
-              <strong>How to read this</strong>
-              <span class="guide-copy">Gross is before deductions. Net is cash after deductions. Pension reduces cash, but adds to pension savings.</span>
-            </div>
+          <div class="summary-shell">
+            <div class="summary-main">
+              <div class="summary-stack">
+                <div class="summary-columns">
+                  <section class="summary-block">
+                    <div class="summary-block-title">
+                      <h3>Without RSU</h3>
+                      <span>regular pay</span>
+                    </div>
+                    <p class="summary-block-help">Normal salary cashflow after tax, NI, pension, benefits, and deductions.</p>
+                    <div class="summary-metrics">
+                      <div class="metric primary">
+                        <strong>Monthly net pay</strong>
+                        <div id="salaryMonthly" class="value">0</div>
+                        <div id="salaryAnnual" class="sub">0 per year</div>
+                      </div>
+                      <div class="metric">
+                        <strong>Gross annual pay</strong>
+                        <div id="grossWithoutRsu" class="value">0</div>
+                        <div class="sub">Before tax and deductions</div>
+                      </div>
+                      <div class="metric">
+                        <strong>Cash kept from regular gross</strong>
+                        <div id="rateWithoutRsu" class="value">0.0%</div>
+                        <div class="sub">After tax, NI, pension, and deductions</div>
+                      </div>
+                    </div>
+                  </section>
 
-            <div class="summary-columns">
-              <section class="summary-block">
-                <div class="summary-block-title">
-                  <h3>Without RSU</h3>
-                  <span>regular pay</span>
+                  <section class="summary-block">
+                    <div class="summary-block-title">
+                      <h3>With RSU</h3>
+                      <span>annualized view</span>
+                    </div>
+                    <p class="summary-block-help">Adds estimated RSU net value. Monthly figure is annual total divided by 12.</p>
+                    <div class="summary-metrics">
+                      <div class="metric emphasis">
+                        <strong>Monthly net incl. RSU</strong>
+                        <div id="withRsuMonthly" class="value">0</div>
+                        <div id="withRsuAnnual" class="sub">0 per year</div>
+                      </div>
+                      <div class="metric">
+                        <strong>Gross annual pay plus RSU</strong>
+                        <div id="grossWithRsu" class="value">0</div>
+                        <div class="sub">Before tax and deductions</div>
+                      </div>
+                      <div class="metric">
+                        <strong>Cash + RSU net kept from total gross</strong>
+                        <div id="rateWithRsu" class="value">0.0%</div>
+                        <div class="sub">Compares annual net cash plus RSU net to gross pay plus RSU gross</div>
+                      </div>
+                    </div>
+                  </section>
                 </div>
-                <p class="summary-block-help">Normal salary cashflow after tax, NI, pension, benefits, and deductions.</p>
-                <div class="summary-metrics">
-                  <div class="metric primary">
-                    <strong>Monthly net pay</strong>
-                    <div id="salaryMonthly" class="value">GBP 0</div>
-                    <div id="salaryAnnual" class="sub">GBP 0 per year</div>
-                  </div>
-                  <div class="metric">
-                    <strong>Gross annual pay</strong>
-                    <div id="grossWithoutRsu" class="value">GBP 0</div>
-                    <div class="sub">Before tax and deductions</div>
-                  </div>
-                  <div class="metric">
-                    <strong>Cash kept from regular gross</strong>
-                    <div id="rateWithoutRsu" class="value">0.0%</div>
-                    <div class="sub">After tax, NI, pension, and deductions</div>
-                  </div>
-                </div>
-              </section>
 
-              <section class="summary-block">
-                <div class="summary-block-title">
-                  <h3>With RSU</h3>
-                  <span>annualized view</span>
+                <div class="summary-detail">
+                  <div class="summary-block-title">
+                    <h3>Stock and Pension</h3>
+                    <span>supporting figures</span>
+                  </div>
+                  <div class="outputs">
+                    <div class="metric">
+                      <strong>RSU net after tax and NI</strong>
+                      <div id="netRsuAnnual" class="value">0</div>
+                      <div id="netRsuVest" class="sub">0 per vest</div>
+                    </div>
+                    <div class="metric">
+                      <strong>RSU tax and NI rate</strong>
+                      <div id="rsuRateInclTaper" class="value">0.0%</div>
+                      <div id="paLostDueRsu" class="sub">Personal Allowance lost 0</div>
+                    </div>
+                    <div class="metric">
+                      <strong>RSU rate before taper</strong>
+                      <div id="rsuBandOnlyRate" class="value">0.0%</div>
+                      <div class="sub">Excludes extra Personal Allowance loss</div>
+                    </div>
+                    <div class="metric">
+                      <strong>ESPP value after tax</strong>
+                      <div id="esppStockAfterTax" class="value">0</div>
+                      <div id="esppDiscountTax" class="sub">Tax and NI on discount 0</div>
+                    </div>
+                    <div class="metric">
+                      <strong>Pension added this year</strong>
+                      <div id="pensionAnnualTotal" class="value">0</div>
+                      <div id="pensionSplit" class="sub">Employee 0 + employer 0</div>
+                      <div id="pensionRateDetail" class="sub">Employee 0.0% of base salary</div>
+                    </div>
+                  </div>
                 </div>
-                <p class="summary-block-help">Adds estimated RSU net value. Monthly figure is annual total divided by 12.</p>
-                <div class="summary-metrics">
-                  <div class="metric emphasis">
-                    <strong>Monthly net incl. RSU</strong>
-                    <div id="withRsuMonthly" class="value">GBP 0</div>
-                    <div id="withRsuAnnual" class="sub">GBP 0 per year</div>
-                  </div>
-                  <div class="metric">
-                    <strong>Gross annual pay plus RSU</strong>
-                    <div id="grossWithRsu" class="value">GBP 0</div>
-                    <div class="sub">Before tax and deductions</div>
-                  </div>
-                  <div class="metric">
-                    <strong>Cash + RSU net kept from total gross</strong>
-                    <div id="rateWithRsu" class="value">0.0%</div>
-                    <div class="sub">Compares annual net cash plus RSU net to gross pay plus RSU gross</div>
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            <div class="summary-detail">
-              <div class="summary-block-title">
-                <h3>Stock and Pension</h3>
-                <span>supporting figures</span>
               </div>
-              <div class="outputs">
-                <div class="metric">
-                  <strong>RSU net after tax and NI</strong>
-                  <div id="netRsuAnnual" class="value">GBP 0</div>
-                  <div id="netRsuVest" class="sub">GBP 0 per vest</div>
-                </div>
-                <div class="metric">
-                  <strong>RSU tax and NI rate</strong>
-                  <div id="rsuRateInclTaper" class="value">0.0%</div>
-                  <div id="paLostDueRsu" class="sub">Personal Allowance lost GBP 0</div>
-                </div>
-                <div class="metric">
-                  <strong>RSU rate before taper</strong>
-                  <div id="rsuBandOnlyRate" class="value">0.0%</div>
-                  <div class="sub">Excludes extra Personal Allowance loss</div>
-                </div>
-                <div class="metric">
-                  <strong>ESPP value after tax</strong>
-                  <div id="esppStockAfterTax" class="value">GBP 0</div>
-                  <div id="esppDiscountTax" class="sub">Tax and NI on discount GBP 0</div>
-                </div>
-                <div class="metric">
-                  <strong>Pension added this year</strong>
-                  <div id="pensionAnnualTotal" class="value">GBP 0</div>
-                  <div id="pensionSplit" class="sub">Employee GBP 0 + employer GBP 0</div>
-                  <div id="pensionRateDetail" class="sub">Employee 0.0% of base salary</div>
-                </div>
-              </div>
+
             </div>
+
+            <aside class="info-rail" aria-label="Calculation guidance">
+              <div class="summary-guide">
+                <strong>How to read this</strong>
+                <span class="guide-copy">Gross is before deductions. Net is cash after deductions. Pension reduces cash, but adds to pension savings.</span>
+              </div>
+              <div class="explain" id="rsuExplanation"></div>
+              <section class="info-card">
+                <h3>What These Numbers Show</h3>
+                <p>The top cards separate regular salary cashflow from stock-driven outcomes so you can compare normal payroll with stock-inclusive take-home.</p>
+              </section>
+              <section class="info-card">
+                <h3>What The Tables Add</h3>
+                <p>Tax Bands compares regular pay against regular pay plus stock income, while Stock Plans isolates RSU and ESPP deductions and after-tax value.</p>
+              </section>
+              <section class="info-card">
+                <h3>Privacy And Portability</h3>
+                <p>Local sessions stay in this browser. Share links and JSON export create portable copies only when you explicitly use them.</p>
+              </section>
+            </aside>
           </div>
 
-          <div class="explain" id="rsuExplanation"></div>
-
-          <div class="subsection">
+          <div class="subsection chart-section">
             <h3>Cashflow Chart</h3>
             <div class="chart-controls">
               <label for="chartGrouping">
@@ -1580,20 +2417,25 @@
             </div>
             <div id="chartLegend" class="legend"></div>
             <div id="chartStatus" class="chart-status"></div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Period</th>
-                  <th class="num">Gross cash</th>
-                  <th class="num">Tax + NI</th>
-                  <th class="num">Deductions</th>
-                  <th class="num">Stock value</th>
-                  <th class="num">Net</th>
-                  <th>Statement</th>
-                </tr>
-              </thead>
-              <tbody id="cashflowRows"></tbody>
-            </table>
+            <details class="collapsible-view">
+              <summary>Monthly View</summary>
+              <div class="collapsible-body">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th class="num">Gross cash</th>
+                      <th class="num">Tax + NI</th>
+                      <th class="num">Deductions</th>
+                      <th class="num">Stock value</th>
+                      <th class="num">Net</th>
+                      <th>Statement</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cashflowRows"></tbody>
+                </table>
+              </div>
+            </details>
           </div>
 
           <div id="printReportSection" class="subsection print-report-section">
@@ -1702,24 +2544,35 @@
           <div id="pensionSensitivitySection" class="subsection" style="display: none;">
             <h3>Pension Sensitivity</h3>
             <div class="sensitivity-legend">
+              <span>Tax bands use taxable income after pension, including BIK, RSU gross value, and taxable ESPP discount.</span>
+              <span>Current row matches the pension rate entered above.</span>
               <span><span class="threshold-swatch"></span>First rate where additional-rate taxable income reaches zero</span>
               <span><span class="threshold-swatch"></span>First rate where full Personal Allowance is restored</span>
             </div>
             <table>
               <thead>
                 <tr>
-                  <th class="num">Pension</th>
+                  <th class="num" rowspan="2">Pension</th>
+                  <th class="group-head" colspan="4">Take-Home</th>
+                  <th class="group-head" colspan="2">Taxable Income</th>
+                  <th class="num" rowspan="2">Personal Allowance</th>
+                  <th class="group-head" colspan="2">Basic Rate Band</th>
+                  <th class="group-head" colspan="2">Higher Rate Band</th>
+                  <th class="group-head" colspan="2">Additional Rate Band</th>
+                </tr>
+                <tr class="subhead">
                   <th class="num">Salary annual</th>
                   <th class="num">Salary monthly</th>
-                  <th class="num">With RSU annual</th>
-                  <th class="num">Rate</th>
-                  <th class="num">Personal Allowance</th>
-                  <th class="num">Basic taxable</th>
-                  <th class="num">Basic tax</th>
-                  <th class="num">Higher taxable</th>
-                  <th class="num">Higher tax</th>
-                  <th class="num">Additional taxable</th>
-                  <th class="num">Additional tax</th>
+                  <th class="num">Annual incl. RSU</th>
+                  <th class="num">Cash take-home %</th>
+                  <th class="num">Stock taxable</th>
+                  <th class="num">Total incl. stock</th>
+                  <th class="num">Taxable</th>
+                  <th class="num">Tax</th>
+                  <th class="num">Taxable</th>
+                  <th class="num">Tax</th>
+                  <th class="num">Taxable</th>
+                  <th class="num">Tax</th>
                 </tr>
               </thead>
               <tbody id="pensionSensitivity"></tbody>
@@ -1770,7 +2623,6 @@
     <div id="drawerOverlay" class="drawer-overlay" aria-hidden="true"></div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script>
     "use strict";
 
@@ -1810,9 +2662,14 @@
 
     const sessionIndexKey = "ukTakeHomePayCalculator.sessionKeys.v1";
     const sessionPayloadPrefix = "ukTakeHomePayCalculator.session.";
+    const themeStorageKey = "ukTakeHomePayCalculator.theme.v1";
+    const exportFormatVersion = 1;
     const maxSessionKeys = 10;
     let activeSessionKey = "";
     let selectedPayslipMonthIndex = 0;
+    let updateFrameId = 0;
+    let autosaveTimerId = 0;
+    let storageStatusTimerId = 0;
 
     const defaultInputValues = {
       baseSalary: 35000,
@@ -1863,15 +2720,36 @@
     const monthLabels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
 
     const chartComponents = [
-      { key: "grossCash", label: "Cash pay", color: "#2f6f73", direction: "positive" },
-      { key: "rsuGross", label: "RSU gross", color: "#5b8f68", direction: "positive" },
-      { key: "esppStockValue", label: "ESPP stock value", color: "#6d7fb3", direction: "positive" },
-      { key: "incomeTax", label: "Income tax", color: "#b05c4b", direction: "negative" },
-      { key: "employeeNi", label: "Employee NI", color: "#d08a36", direction: "negative" },
-      { key: "pension", label: "Pension", color: "#7a628f", direction: "negative" },
-      { key: "esppContribution", label: "ESPP contribution", color: "#3e8791", direction: "negative" },
-      { key: "deductions", label: "Other deductions", color: "#8a8f91", direction: "negative" }
+      { key: "grossCash", label: "Cash pay", color: "var(--chart-cash)", direction: "positive" },
+      { key: "rsuGross", label: "RSU gross", color: "var(--chart-rsu)", direction: "positive" },
+      { key: "esppStockValue", label: "ESPP stock value", color: "var(--chart-espp)", direction: "positive" },
+      { key: "incomeTax", label: "Income tax", color: "var(--chart-tax)", direction: "negative" },
+      { key: "employeeNi", label: "Employee NI", color: "var(--chart-ni)", direction: "negative" },
+      { key: "pension", label: "Pension", color: "var(--chart-pension)", direction: "negative" },
+      { key: "esppContribution", label: "ESPP contribution", color: "var(--chart-espp-contrib)", direction: "negative" },
+      { key: "deductions", label: "Other deductions", color: "var(--chart-deductions)", direction: "negative" }
     ];
+
+    const positiveChartComponents = chartComponents.filter((component) => component.direction === "positive");
+    const negativeChartComponents = chartComponents.filter((component) => component.direction === "negative");
+
+    const moneyFormatter = new Intl.NumberFormat("en-GB", {
+      maximumFractionDigits: 0
+    });
+
+    const usdFormatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 2
+    });
+
+    const percentFormatter = new Intl.NumberFormat("en-GB", {
+      style: "percent",
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
+
+    const numberFormatters = new Map();
 
     const helpText = {
       baseSalary: "Annual base salary before pension, tax, National Insurance, and deductions.",
@@ -1887,7 +2765,7 @@
       studentLoanDeductions: "Annual student loan or similar payroll deductions taken from net pay.",
       pensionReducesTax: "Turn on if your pension is salary sacrifice or net-pay and reduces taxable pay through payroll.",
       pensionReducesNI: "Turn on if your pension is salary sacrifice and reduces National Insurance-able pay.",
-      showPensionSensitivity: "When enabled, calculates the take-home impact at pension rates from 5% to 65%. Leave off for faster, simpler output.",
+      showPensionSensitivity: "When enabled, calculates the take-home impact at pension rates from 5% to 100%. Leave off for faster, simpler output.",
       privateHealthBikAnnual: "Employer-funded private medical benefit value. It increases taxable income but is not paid as cash.",
       privateHealthMonths: "Number of months in the tax year you receive the private healthcare benefit.",
       dentalEmployeeMonthly: "Monthly dental amount deducted from your net pay.",
@@ -1932,33 +2810,24 @@
     }
 
     function money(value) {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-        maximumFractionDigits: 0
-      }).format(Number.isFinite(value) ? value : 0).replace("£", "GBP ");
+      return moneyFormatter.format(Number.isFinite(value) ? value : 0);
     }
 
     function usd(value) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 2
-      }).format(Number.isFinite(value) ? value : 0).replace("$", "USD ");
+      return usdFormatter.format(Number.isFinite(value) ? value : 0).replace("$", "USD ");
     }
 
     function pct(value) {
-      return new Intl.NumberFormat("en-GB", {
-        style: "percent",
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-      }).format(Number.isFinite(value) ? value : 0);
+      return percentFormatter.format(Number.isFinite(value) ? value : 0);
     }
 
     function num(value, digits = 2) {
-      return new Intl.NumberFormat("en-GB", {
-        maximumFractionDigits: digits
-      }).format(Number.isFinite(value) ? value : 0);
+      if (!numberFormatters.has(digits)) {
+        numberFormatters.set(digits, new Intl.NumberFormat("en-GB", {
+          maximumFractionDigits: digits
+        }));
+      }
+      return numberFormatters.get(digits).format(Number.isFinite(value) ? value : 0);
     }
 
     function taxFromTaxable(taxable) {
@@ -2201,7 +3070,7 @@
 
     function renderStockRows(result) {
       const rows = [
-        ["RSU gross GBP", money(result.rsuGrossGbp)],
+        ["RSU gross value", money(result.rsuGrossGbp)],
         ["RSU income tax", money(result.rsuIncomeTax)],
         ["RSU employee NI", money(result.rsuNi)],
         ["RSU net take-home", money(result.rsuNet)],
@@ -2220,31 +3089,51 @@
     }
 
     function renderSensitivity(data) {
-      const scenarios = [];
-      for (let pctValue = 0.05; pctValue <= 0.6501; pctValue += 0.05) {
-        const result = calculate(data, { pensionRateOverride: pctValue });
-        scenarios.push({ pctValue, result });
+      const currentPensionRate = Math.max(0, percent(data.pensionPct));
+      const rates = [];
+      for (let pctValue = 0.05; pctValue <= 1.0001; pctValue += 0.05) {
+        rates.push(Number(pctValue.toFixed(4)));
       }
-      const additionalClearedIndex = scenarios.findIndex(({ result }) => result.regularTax.additional <= 0.005);
-      const allowanceRestoredIndex = scenarios.findIndex(({ result }) => result.regularTax.personalAllowance >= tax.personalAllowance - 0.005);
-      document.getElementById("pensionSensitivity").innerHTML = scenarios.map(({ pctValue, result }, index) => {
+      if (currentPensionRate <= 1 && !rates.some((rate) => Math.abs(rate - currentPensionRate) < 0.00001)) {
+        rates.push(currentPensionRate);
+      }
+      rates.sort((a, b) => a - b);
+
+      const scenarios = [];
+      rates.forEach((pctValue) => {
+        const result = calculate(data, { pensionRateOverride: pctValue });
+        scenarios.push({
+          pctValue,
+          isCurrent: Math.abs(pctValue - currentPensionRate) < 0.00001,
+          result
+        });
+      });
+      const additionalClearedIndex = scenarios.findIndex(({ result }) => result.stockTax.additional <= 0.005);
+      const allowanceRestoredIndex = scenarios.findIndex(({ result }) => result.stockTax.personalAllowance >= tax.personalAllowance - 0.005);
+      document.getElementById("pensionSensitivity").innerHTML = scenarios.map(({ pctValue, isCurrent, result }, index) => {
         const additionalCleared = index === additionalClearedIndex;
         const allowanceRestored = index === allowanceRestoredIndex;
-        const rowClass = additionalCleared || allowanceRestored ? "sensitivity-threshold" : "";
+        const rowClasses = [
+          additionalCleared || allowanceRestored ? "sensitivity-threshold" : "",
+          isCurrent ? "sensitivity-current" : ""
+        ].filter(Boolean).join(" ");
+        const taxableStockIncome = result.rsuGrossGbp + result.esppTaxableForIncome;
         return row([
-          td(pct(pctValue), "num"),
+          td(isCurrent ? `${pct(pctValue)} current` : pct(pctValue), "num"),
           td(money(result.salaryTakeHome), "num"),
           td(money(result.salaryTakeHome / 12), "num"),
           td(money(result.withRsuAnnual), "num"),
           td(pct(result.rateWithoutRsu), "num"),
-          td(money(result.regularTax.personalAllowance), allowanceRestored ? "num threshold-hit" : "num"),
-          td(money(result.regularTax.basic), "num"),
-          td(money(result.regularTax.basic * tax.basicRate), "num"),
-          td(money(result.regularTax.higher), "num"),
-          td(money(result.regularTax.higher * tax.higherRate), "num"),
-          td(money(result.regularTax.additional), additionalCleared ? "num threshold-hit" : "num"),
-          td(money(result.regularTax.additional * tax.additionalRate), additionalCleared ? "num threshold-hit" : "num")
-        ], rowClass);
+          td(money(taxableStockIncome), "num"),
+          td(money(result.stockAdjustedIncome), "num"),
+          td(money(result.stockTax.personalAllowance), allowanceRestored ? "num threshold-hit" : "num"),
+          td(money(result.stockTax.basic), "num"),
+          td(money(result.stockTax.basic * tax.basicRate), "num"),
+          td(money(result.stockTax.higher), "num"),
+          td(money(result.stockTax.higher * tax.higherRate), "num"),
+          td(money(result.stockTax.additional), additionalCleared ? "num threshold-hit" : "num"),
+          td(money(result.stockTax.additional * tax.additionalRate), additionalCleared ? "num threshold-hit" : "num")
+        ], rowClasses);
       }).join("");
     }
 
@@ -2365,7 +3254,7 @@
     function renderCashflowLegend() {
       document.getElementById("chartLegend").innerHTML = chartComponents.map((component) => (
         `<span class="legend-item"><span class="legend-swatch" style="background:${component.color}"></span>${component.label}</span>`
-      )).join("") + `<span class="legend-item"><span class="legend-swatch" style="background:#111827"></span>Net line</span>`;
+      )).join("") + `<span class="legend-item"><span class="legend-swatch" style="background:var(--chart-net)"></span>Net line</span>`;
     }
 
     function chartTooltipHtml(period) {
@@ -2376,91 +3265,150 @@
       return `<strong>${period.label}</strong>${componentRows}<div>Net: <strong>${money(period.net)}</strong></div>`;
     }
 
+    function svgNode(name, attributes = {}) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.entries(attributes).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          element.setAttribute(key, String(value));
+        }
+      });
+      return element;
+    }
+
+    function niceStep(span, targetTicks = 5) {
+      if (!Number.isFinite(span) || span <= 0) return 1;
+      const rawStep = span / Math.max(1, targetTicks);
+      const power = 10 ** Math.floor(Math.log10(rawStep));
+      const error = rawStep / power;
+      const factor = error >= 5 ? 5 : error >= 2 ? 2 : 1;
+      return factor * power;
+    }
+
+    function buildLinearTicks(minValue, maxValue, targetTicks = 5) {
+      if (!Number.isFinite(minValue) || !Number.isFinite(maxValue)) {
+        return [0, 1];
+      }
+      if (minValue === maxValue) {
+        const offset = Math.abs(minValue) > 0 ? Math.abs(minValue) * 0.2 : 1;
+        return [minValue - offset, minValue, minValue + offset];
+      }
+      const step = niceStep(maxValue - minValue, targetTicks);
+      const start = Math.floor(minValue / step) * step;
+      const end = Math.ceil(maxValue / step) * step;
+      const ticks = [];
+      for (let value = start; value <= end + step / 2; value += step) {
+        ticks.push(Math.abs(value) < step / 1000 ? 0 : value);
+      }
+      return ticks;
+    }
+
+    function createYScale(domainMin, domainMax, rangeMin, rangeMax) {
+      const span = domainMax - domainMin || 1;
+      return (value) => rangeMin + ((domainMax - value) / span) * (rangeMax - rangeMin);
+    }
+
+    function linePath(points) {
+      return points.map(([x, y], index) => `${index === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`).join(" ");
+    }
+
+    function bindChartTooltip(element, tooltip, period) {
+      const show = (event) => {
+        tooltip.innerHTML = chartTooltipHtml(period);
+        tooltip.style.opacity = "1";
+        tooltip.style.left = `${event.clientX}px`;
+        tooltip.style.top = `${event.clientY}px`;
+      };
+      element.addEventListener("mouseenter", show);
+      element.addEventListener("mousemove", show);
+      element.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = "0";
+      });
+    }
+
     function renderCashflowChart(periods, grouping) {
       renderCashflowLegend();
       renderCashflowRows(periods);
 
       const status = document.getElementById("chartStatus");
       const svgElement = document.getElementById("cashflowChart");
-      if (!window.d3) {
-        svgElement.innerHTML = "";
-        status.textContent = "D3.js did not load. The period table below still updates.";
-        return;
-      }
-
-      const d3Lib = window.d3;
-      const svg = d3Lib.select(svgElement);
       const width = Math.max(320, Math.round(svgElement.getBoundingClientRect().width || 900));
       const height = 320;
       const margin = { top: 18, right: 12, bottom: 46, left: width < 420 ? 58 : 74 };
       const innerBottom = height - margin.bottom;
-
-      svg.attr("viewBox", `0 0 ${width} ${height}`);
-      svg.selectAll("*").remove();
+      svgElement.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svgElement.replaceChildren();
 
       if (!periods.length) {
         status.textContent = "Add inputs to populate the chart.";
         return;
       }
 
-      const positiveComponents = chartComponents.filter((component) => component.direction === "positive");
-      const negativeComponents = chartComponents.filter((component) => component.direction === "negative");
-      const positiveMax = d3Lib.max(periods, (period) => positiveComponents.reduce((sum, component) => sum + period[component.key], 0)) || 0;
-      const negativeMax = d3Lib.max(periods, (period) => negativeComponents.reduce((sum, component) => sum + period[component.key], 0)) || 0;
-      const netMin = d3Lib.min(periods, (period) => period.net) || 0;
-      const netMax = d3Lib.max(periods, (period) => period.net) || 0;
+      const positiveMax = periods.reduce((max, period) => (
+        Math.max(max, positiveChartComponents.reduce((sum, component) => sum + period[component.key], 0))
+      ), 0);
+      const negativeMax = periods.reduce((max, period) => (
+        Math.max(max, negativeChartComponents.reduce((sum, component) => sum + period[component.key], 0))
+      ), 0);
+      const netMin = periods.reduce((min, period) => Math.min(min, period.net), 0);
+      const netMax = periods.reduce((max, period) => Math.max(max, period.net), 0);
 
-      const y = d3Lib.scaleLinear()
-        .domain([
-          Math.min(-negativeMax, netMin, 0) * 1.08,
-          Math.max(positiveMax, netMax, 1) * 1.08
-        ])
-        .nice()
-        .range([innerBottom, margin.top]);
+      const rawMin = Math.min(-negativeMax, netMin, 0) * 1.08;
+      const rawMax = Math.max(positiveMax, netMax, 1) * 1.08;
+      const yTicks = buildLinearTicks(rawMin, rawMax, 5);
+      const domainMin = yTicks[0];
+      const domainMax = yTicks[yTicks.length - 1];
+      const y = createYScale(domainMin, domainMax, margin.top, innerBottom);
 
-      const x = d3Lib.scaleBand()
-        .domain(periods.map((period) => period.label))
-        .range([margin.left, width - margin.right])
-        .padding(0.24);
+      const plotWidth = width - margin.left - margin.right;
+      const step = plotWidth / Math.max(1, periods.length);
+      const bandWidth = Math.max(18, step * 0.64);
+      const xPosition = (index) => margin.left + index * step + (step - bandWidth) / 2;
 
-      const yAxis = d3Lib.axisLeft(y)
-        .ticks(5)
-        .tickFormat((value) => money(value).replace("GBP ", "£"));
-      const xTickValues = width < 520 && grouping === "monthly"
-        ? periods.filter((_, index) => index % 2 === 0).map((period) => period.label)
-        : periods.map((period) => period.label);
-      const xAxis = d3Lib.axisBottom(x).tickValues(xTickValues);
+      const gridGroup = svgNode("g", { class: "chart-grid" });
+      yTicks.forEach((tick) => {
+        const yPos = y(tick);
+        gridGroup.appendChild(svgNode("line", {
+          x1: margin.left,
+          x2: width - margin.right,
+          y1: yPos,
+          y2: yPos
+        }));
+      });
+      svgElement.appendChild(gridGroup);
 
-      svg.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
-        .call(yAxis)
-        .call((group) => group.select(".domain").remove())
-        .call((group) => group.selectAll("text").attr("fill", "#5f6f73"));
+      const yAxisGroup = svgNode("g", { class: "chart-axis" });
+      yTicks.forEach((tick) => {
+        const yPos = y(tick);
+        const label = svgNode("text", {
+          x: margin.left - 8,
+          y: yPos + 4,
+          "text-anchor": "end"
+        });
+        label.textContent = money(tick);
+        yAxisGroup.appendChild(label);
+      });
+      svgElement.appendChild(yAxisGroup);
 
-      svg.append("g")
-        .attr("transform", `translate(0,${innerBottom})`)
-        .call(xAxis)
-        .call((group) => group.select(".domain").remove())
-        .call((group) => group.selectAll("text").attr("fill", "#5f6f73"));
+      const xAxisGroup = svgNode("g", { class: "chart-axis" });
+      periods.forEach((period, index) => {
+        if (width < 520 && grouping === "monthly" && index % 2 === 1) return;
+        const label = svgNode("text", {
+          x: xPosition(index) + bandWidth / 2,
+          y: innerBottom + 20,
+          "text-anchor": "middle"
+        });
+        label.textContent = period.label;
+        xAxisGroup.appendChild(label);
+      });
+      svgElement.appendChild(xAxisGroup);
 
-      svg.append("g")
-        .attr("stroke", "#e3eaec")
-        .attr("stroke-width", 1)
-        .selectAll("line")
-        .data(y.ticks(5))
-        .join("line")
-        .attr("x1", margin.left)
-        .attr("x2", width - margin.right)
-        .attr("y1", (value) => y(value))
-        .attr("y2", (value) => y(value));
-
-      svg.append("line")
-        .attr("x1", margin.left)
-        .attr("x2", width - margin.right)
-        .attr("y1", y(0))
-        .attr("y2", y(0))
-        .attr("stroke", "#243538")
-        .attr("stroke-width", 1.2);
+      svgElement.appendChild(svgNode("line", {
+        class: "chart-zero-line",
+        x1: margin.left,
+        x2: width - margin.right,
+        y1: y(0),
+        y2: y(0)
+      }));
 
       let tooltip = document.getElementById("chartTooltip");
       if (!tooltip) {
@@ -2470,75 +3418,61 @@
         document.body.appendChild(tooltip);
       }
 
-      periods.forEach((period) => {
+      periods.forEach((period, index) => {
+        const x = xPosition(index);
         let positiveBase = 0;
-        positiveComponents.forEach((component) => {
+        positiveChartComponents.forEach((component) => {
           const value = period[component.key];
           if (value <= 0) return;
-          svg.append("rect")
-            .attr("x", x(period.label))
-            .attr("y", y(positiveBase + value))
-            .attr("width", x.bandwidth())
-            .attr("height", Math.max(0, y(positiveBase) - y(positiveBase + value)))
-            .attr("fill", component.color)
-            .on("mouseenter", (event) => {
-              tooltip.innerHTML = chartTooltipHtml(period);
-              tooltip.style.opacity = "1";
-              tooltip.style.left = `${event.clientX}px`;
-              tooltip.style.top = `${event.clientY}px`;
-            })
-            .on("mousemove", (event) => {
-              tooltip.style.left = `${event.clientX}px`;
-              tooltip.style.top = `${event.clientY}px`;
-            })
-            .on("mouseleave", () => { tooltip.style.opacity = "0"; });
+          svgElement.appendChild(svgNode("rect", {
+            x,
+            y: y(positiveBase + value),
+            width: bandWidth,
+            height: Math.max(0, y(positiveBase) - y(positiveBase + value)),
+            fill: component.color
+          }));
           positiveBase += value;
         });
 
         let negativeBase = 0;
-        negativeComponents.forEach((component) => {
+        negativeChartComponents.forEach((component) => {
           const value = period[component.key];
           if (value <= 0) return;
-          svg.append("rect")
-            .attr("x", x(period.label))
-            .attr("y", y(-negativeBase))
-            .attr("width", x.bandwidth())
-            .attr("height", Math.max(0, y(-(negativeBase + value)) - y(-negativeBase)))
-            .attr("fill", component.color)
-            .on("mouseenter", (event) => {
-              tooltip.innerHTML = chartTooltipHtml(period);
-              tooltip.style.opacity = "1";
-              tooltip.style.left = `${event.clientX}px`;
-              tooltip.style.top = `${event.clientY}px`;
-            })
-            .on("mousemove", (event) => {
-              tooltip.style.left = `${event.clientX}px`;
-              tooltip.style.top = `${event.clientY}px`;
-            })
-            .on("mouseleave", () => { tooltip.style.opacity = "0"; });
+          svgElement.appendChild(svgNode("rect", {
+            x,
+            y: y(-negativeBase),
+            width: bandWidth,
+            height: Math.max(0, y(-(negativeBase + value)) - y(-negativeBase)),
+            fill: component.color
+          }));
           negativeBase += value;
         });
+
+        const hitZone = svgNode("rect", {
+          class: "chart-hit-zone",
+          x,
+          y: margin.top,
+          width: bandWidth,
+          height: innerBottom - margin.top
+        });
+        bindChartTooltip(hitZone, tooltip, period);
+        svgElement.appendChild(hitZone);
       });
 
-      const line = d3Lib.line()
-        .x((period) => x(period.label) + x.bandwidth() / 2)
-        .y((period) => y(period.net));
+      const linePoints = periods.map((period, index) => [xPosition(index) + bandWidth / 2, y(period.net)]);
+      svgElement.appendChild(svgNode("path", {
+        class: "chart-net-line",
+        d: linePath(linePoints)
+      }));
 
-      svg.append("path")
-        .datum(periods)
-        .attr("fill", "none")
-        .attr("stroke", "#111827")
-        .attr("stroke-width", 2.2)
-        .attr("d", line);
-
-      svg.append("g")
-        .selectAll("circle")
-        .data(periods)
-        .join("circle")
-        .attr("cx", (period) => x(period.label) + x.bandwidth() / 2)
-        .attr("cy", (period) => y(period.net))
-        .attr("r", 3.5)
-        .attr("fill", "#111827");
+      linePoints.forEach(([cx, cy]) => {
+        svgElement.appendChild(svgNode("circle", {
+          class: "chart-net-dot",
+          cx,
+          cy,
+          r: 3.5
+        }));
+      });
 
       const groupingName = {
         monthly: "monthly",
@@ -2938,12 +3872,12 @@
       });
     }
 
-    function buildShareUrl() {
-      if (!activeSessionKey) {
-        setActiveSessionKey(generateSessionKey());
-        saveSessionState();
+    function safeLocalStore() {
+      try {
+        return window.localStorage || null;
+      } catch {
+        return null;
       }
-      return sessionUrl(activeSessionKey);
     }
 
     function sessionStore() {
@@ -2956,7 +3890,161 @@
 
     function setStorageStatus(message) {
       const status = document.getElementById("storageStatus");
-      if (status) status.textContent = message;
+      if (!status) return;
+      if (storageStatusTimerId) {
+        window.clearTimeout(storageStatusTimerId);
+        storageStatusTimerId = 0;
+      }
+      if (!message) {
+        status.textContent = "";
+        status.classList.remove("is-visible");
+        return;
+      }
+      status.textContent = message;
+      status.classList.add("is-visible");
+      storageStatusTimerId = window.setTimeout(() => {
+        status.classList.remove("is-visible");
+        storageStatusTimerId = 0;
+      }, 2600);
+    }
+
+    function sessionStatusMessage(key = activeSessionKey) {
+      return key
+        ? `Session ${key} autosaves locally. Use share link or JSON for a portable copy.`
+        : "Session inputs autosave locally in this browser.";
+    }
+
+    function normalizeTheme(value) {
+      const normalized = String(value || "").toLowerCase();
+      return ["primary", "mono", "market"].includes(normalized) ? normalized : "primary";
+    }
+
+    function themeColor(theme) {
+      return {
+        primary: "#1d4ed8",
+        mono: "#111111",
+        market: "#1f6a5f"
+      }[normalizeTheme(theme)];
+    }
+
+    function applyTheme(theme, persist = true) {
+      const normalized = normalizeTheme(theme);
+      document.documentElement.setAttribute("data-theme", normalized);
+      document.querySelectorAll("[data-theme-value]").forEach((button) => {
+        const active = button.getAttribute("data-theme-value") === normalized;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      const themeMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeMeta) themeMeta.setAttribute("content", themeColor(normalized));
+      if (persist) {
+        const store = safeLocalStore();
+        if (store) {
+          try {
+            store.setItem(themeStorageKey, normalized);
+          } catch {
+            // Ignore theme persistence failures.
+          }
+        }
+      }
+      if (document.getElementById("cashflowChart")?.childElementCount) {
+        const data = readInputs();
+        renderCashflow(data, calculate(data));
+      }
+    }
+
+    function setupThemeControls() {
+      const initialTheme = normalizeTheme(document.documentElement.getAttribute("data-theme") || "primary");
+      applyTheme(initialTheme, false);
+      document.querySelectorAll("[data-theme-value]").forEach((button) => {
+        button.addEventListener("click", () => applyTheme(button.getAttribute("data-theme-value")));
+      });
+    }
+
+    function activateInputTab(tabName) {
+      const normalized = String(tabName || "pay");
+      document.querySelectorAll(".input-tab").forEach((button) => {
+        const active = button.dataset.tab === normalized;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+      });
+      document.querySelectorAll("[data-tab-panel]").forEach((panel) => {
+        const active = panel.dataset.tabPanel === normalized;
+        panel.classList.toggle("is-active", active);
+        panel.hidden = !active;
+      });
+    }
+
+    function setupInputTabs() {
+      const tabs = Array.from(document.querySelectorAll(".input-tab"));
+      tabs.forEach((button, index) => {
+        button.addEventListener("click", () => activateInputTab(button.dataset.tab));
+        button.addEventListener("keydown", (event) => {
+          const move = event.key === "ArrowRight" || event.key === "ArrowDown"
+            ? 1
+            : event.key === "ArrowLeft" || event.key === "ArrowUp"
+              ? -1
+              : 0;
+          if (!move && event.key !== "Home" && event.key !== "End") return;
+          event.preventDefault();
+          const nextIndex = event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? tabs.length - 1
+              : (index + move + tabs.length) % tabs.length;
+          const next = tabs[nextIndex];
+          activateInputTab(next.dataset.tab);
+          next.focus();
+        });
+      });
+      activateInputTab(document.querySelector(".input-tab.is-active")?.dataset.tab || "pay");
+    }
+
+    function buildExportPayload() {
+      return {
+        app: "uk-take-home-pay-calculator",
+        version: exportFormatVersion,
+        exportedAt: new Date().toISOString(),
+        theme: normalizeTheme(document.documentElement.getAttribute("data-theme")),
+        inputs: readInputState()
+      };
+    }
+
+    function extractPortableState(payload) {
+      if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
+      if (payload.inputs && typeof payload.inputs === "object") return payload.inputs;
+      if (payload.state && typeof payload.state === "object") return payload.state;
+      const knownIds = [...inputIds, ...checkboxIds, ...selectIds];
+      return knownIds.some((id) => Object.prototype.hasOwnProperty.call(payload, id)) ? payload : null;
+    }
+
+    function encodeStateToken(payload) {
+      const json = JSON.stringify(payload);
+      try {
+        const bytes = new TextEncoder().encode(json);
+        let binary = "";
+        bytes.forEach((value) => { binary += String.fromCharCode(value); });
+        return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+      } catch {
+        return btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+      }
+    }
+
+    function decodeStateToken(token) {
+      const normalized = String(token || "").replace(/-/g, "+").replace(/_/g, "/");
+      const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+      try {
+        const binary = atob(padded);
+        const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+        return JSON.parse(new TextDecoder().decode(bytes));
+      } catch {
+        return JSON.parse(decodeURIComponent(escape(atob(padded))));
+      }
+    }
+
+    function buildShareUrl() {
+      return `${baseUrlWithoutState()}#state=${encodeURIComponent(encodeStateToken(buildExportPayload()))}`;
     }
 
     function normalizeSessionKey(value) {
@@ -3089,13 +4177,15 @@
 
     function rememberSessionKey(key) {
       const normalized = normalizeSessionKey(key);
-      if (normalized.length !== 8) return;
-      const existing = readSessionKeys().filter((item) => item !== normalized);
+      if (normalized.length !== 8) return false;
+      const previous = readSessionKeys();
+      const existing = previous.filter((item) => item !== normalized);
       const next = [normalized, ...existing];
       const kept = next.slice(0, maxSessionKeys);
       const removed = next.slice(maxSessionKeys);
+      const changed = kept.join("|") !== previous.join("|");
       writeSessionKeys(kept, removed);
-      renderSessionOptions();
+      return changed;
     }
 
     function renderSessionOptions() {
@@ -3138,13 +4228,15 @@
       activeSessionKey = normalized;
       document.getElementById("sessionKeyInput").value = normalized;
       rememberSessionKey(normalized);
+      renderSessionOptions();
       if (updateUrl) {
         history.replaceState(null, "", sessionUrl(normalized));
       }
       return true;
     }
 
-    function saveSessionState() {
+    function saveSessionState(options = {}) {
+      const { refreshLists = false, setStatus = true } = options;
       if (!activeSessionKey) return false;
       const store = sessionStore();
       if (!store) {
@@ -3154,12 +4246,36 @@
       try {
         store.setItem(sessionPayloadKey(activeSessionKey), JSON.stringify(readInputState()));
         rememberSessionKey(activeSessionKey);
-        setStorageStatus(`Autosaved session ${activeSessionKey} in this browser tab.`);
+        if (refreshLists) {
+          renderSessionOptions();
+        } else if (document.body.classList.contains("drawer-history-open")) {
+          renderSessionHistory();
+        }
+        if (setStatus) {
+          setStorageStatus(sessionStatusMessage(activeSessionKey));
+        }
         return true;
       } catch {
         setStorageStatus("Session storage is unavailable.");
         return false;
       }
+    }
+
+    function queueAutosave(delay = 260) {
+      if (autosaveTimerId) {
+        window.clearTimeout(autosaveTimerId);
+      }
+      autosaveTimerId = window.setTimeout(() => {
+        autosaveTimerId = 0;
+        saveSessionState({ setStatus: false });
+      }, delay);
+    }
+
+    function flushAutosave() {
+      if (!autosaveTimerId) return;
+      window.clearTimeout(autosaveTimerId);
+      autosaveTimerId = 0;
+      saveSessionState({ setStatus: false });
     }
 
     function loadSessionState(key) {
@@ -3170,7 +4286,7 @@
       setActiveSessionKey(normalized);
       if (!raw) {
         setStorageStatus(`Created new session ${normalized}.`);
-        saveSessionState();
+        saveSessionState({ refreshLists: true, setStatus: false });
         return false;
       }
       try {
@@ -3198,8 +4314,8 @@
         renderSessionOptions();
         applyDefaultInputs();
         setActiveSessionKey(generateSessionKey());
+        update({ save: true, refreshLists: true, setStatus: false });
         setStorageStatus(`Cleared ${keyToRemove}. Created session ${activeSessionKey}.`);
-        update();
       } catch {
         setStorageStatus(`Could not clear session ${keyToRemove}.`);
       }
@@ -3233,8 +4349,8 @@
         activeSessionKey = "";
         applyDefaultInputs();
         setActiveSessionKey(generateSessionKey());
+        update({ save: true, refreshLists: true, setStatus: false });
         setStorageStatus(`Cleared all saved sessions. Created session ${activeSessionKey}.`);
-        update();
       } catch {
         setStorageStatus("Could not clear saved sessions.");
       }
@@ -3243,8 +4359,8 @@
     function createNewSession() {
       applyDefaultInputs();
       setActiveSessionKey(generateSessionKey());
+      update({ save: true, refreshLists: true, setStatus: false });
       setStorageStatus(`Created new session ${activeSessionKey}.`);
-      update();
     }
 
     function sessionKeyFromUrl() {
@@ -3271,14 +4387,57 @@
     function loadFromHash() {
       if (!location.hash || location.hash.length < 2) return false;
       try {
-        const payload = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(1)))));
-        applyInputState(payload);
-        setStorageStatus("Loaded inputs from an older share link.");
+        const rawToken = location.hash.slice(1);
+        const token = rawToken.startsWith("state=") ? decodeURIComponent(rawToken.slice(6)) : rawToken;
+        const payload = decodeStateToken(token);
+        const state = extractPortableState(payload);
+        if (!state) return false;
+        applyDefaultInputs();
+        applyInputState(state);
+        if (payload.theme) applyTheme(payload.theme);
+        setStorageStatus("Loaded inputs from a share link.");
         return true;
       } catch {
         // Ignore malformed hashes.
         return false;
       }
+    }
+
+    async function exportCurrentSession() {
+      const payload = buildExportPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const date = new Date().toISOString().slice(0, 10);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `uk-take-home-pay-${activeSessionKey || "session"}-${date}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      setStorageStatus(`Exported session ${activeSessionKey || "current"} as JSON.`);
+    }
+
+    function openImportDialog() {
+      const fileInput = document.getElementById("importSessionFile");
+      if (!fileInput) return;
+      fileInput.value = "";
+      fileInput.click();
+    }
+
+    async function importCalculationFile(file) {
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      const state = extractPortableState(payload);
+      if (!state) {
+        throw new Error("JSON file does not contain calculator inputs.");
+      }
+      applyDefaultInputs();
+      applyInputState(state);
+      if (payload.theme) applyTheme(payload.theme);
+      setActiveSessionKey(generateSessionKey());
+      update({ save: true, refreshLists: true, setStatus: false });
+      setStorageStatus(`Imported JSON into session ${activeSessionKey}.`);
     }
 
     function enhanceFieldRows() {
@@ -3289,9 +4448,12 @@
         for (let index = 0; index < items.length; index += 3) {
           const row = document.createElement("div");
           row.className = "field-row";
-          row.appendChild(items[index]);
+          const copy = document.createElement("div");
+          copy.className = "field-copy";
+          if (items[index]) copy.appendChild(items[index]);
+          if (items[index + 2]) copy.appendChild(items[index + 2]);
+          row.appendChild(copy);
           if (items[index + 1]) row.appendChild(items[index + 1]);
-          if (items[index + 2]) row.appendChild(items[index + 2]);
           fragment.appendChild(row);
         }
         fields.appendChild(fragment);
@@ -3338,7 +4500,7 @@
 
     function setupDrawers() {
       addClickHandler("open-inputs", () => openDrawer("inputs"));
-      addClickHandler("open-session", () => openDrawer("session"));
+      addClickHandler("open-settings", () => openDrawer("session"));
       addClickHandler("open-history", () => openDrawer("history"));
       addClickHandler("close-inputs", closeDrawers);
       addClickHandler("close-session", closeDrawers);
@@ -3348,13 +4510,20 @@
         window.addEventListener("keydown", (event) => {
           if (event.key === "Escape") closeDrawers();
         });
-        window.addEventListener("resize", () => {
-          if (window.innerWidth > 760) closeDrawers();
-        });
       }
     }
 
-    function update() {
+    function scheduleUpdate() {
+      if (updateFrameId) return;
+      updateFrameId = window.requestAnimationFrame(() => {
+        updateFrameId = 0;
+        update({ save: false });
+        queueAutosave();
+      });
+    }
+
+    function update(options = {}) {
+      const { save = true, refreshLists = false, setStatus = true } = options;
       const data = readInputs();
       const result = calculate(data);
 
@@ -3386,8 +4555,9 @@
       renderStockRows(result);
       updatePensionSensitivity(data);
       renderCashflow(data, result);
-      renderPrintableReport(data, result);
-      saveSessionState();
+      if (save) {
+        saveSessionState({ refreshLists, setStatus });
+      }
     }
 
     function applyDefaultInputs() {
@@ -3407,18 +4577,18 @@
       if (!activeSessionKey) {
         setActiveSessionKey(generateSessionKey());
       }
+      update({ save: true, refreshLists: true, setStatus: false });
       setStorageStatus(`Reset session ${activeSessionKey}.`);
-      update();
     }
 
     inputIds.forEach((id) => {
-      document.getElementById(id).addEventListener("input", update);
+      document.getElementById(id).addEventListener("input", scheduleUpdate);
     });
     checkboxIds.forEach((id) => {
-      document.getElementById(id).addEventListener("change", update);
+      document.getElementById(id).addEventListener("change", scheduleUpdate);
     });
     selectIds.forEach((id) => {
-      document.getElementById(id).addEventListener("change", update);
+      document.getElementById(id).addEventListener("change", scheduleUpdate);
     });
     document.getElementById("sessionKeyInput").addEventListener("input", (event) => {
       event.target.value = normalizeSessionKey(event.target.value);
@@ -3428,7 +4598,7 @@
         const key = normalizeSessionKey(event.target.value);
         if (key.length === 8) {
           loadSessionState(key);
-          update();
+          update({ save: false });
         } else {
           setStorageStatus("Enter an 8-character key.");
         }
@@ -3445,7 +4615,7 @@
       const key = selected || typed;
       if (key.length === 8) {
         loadSessionState(key);
-        update();
+        update({ save: false });
       } else {
         setStorageStatus("Enter or select an 8-character key.");
       }
@@ -3464,40 +4634,56 @@
       const card = event.target.closest("[data-session-key]");
       if (!card) return;
       loadSessionState(card.getAttribute("data-session-key"));
-      update();
+      update({ save: false });
     });
     document.getElementById("copy-link").addEventListener("click", async () => {
       const url = buildShareUrl();
       try {
         await navigator.clipboard.writeText(url);
         document.getElementById("copy-link").textContent = "Copied";
-        setTimeout(() => { document.getElementById("copy-link").textContent = "Copy Link"; }, 1200);
+        setTimeout(() => { document.getElementById("copy-link").textContent = "Copy Share Link"; }, 1200);
+        setStorageStatus("Copied a portable share link to the clipboard.");
       } catch {
         window.prompt("Copy this link", url);
+      }
+    });
+    document.getElementById("export-session").addEventListener("click", exportCurrentSession);
+    document.getElementById("import-session").addEventListener("click", openImportDialog);
+    document.getElementById("importSessionFile").addEventListener("change", async (event) => {
+      const [file] = event.target.files || [];
+      if (!file) return;
+      try {
+        await importCalculationFile(file);
+      } catch (error) {
+        setStorageStatus(error?.message || "Could not import the JSON file.");
       }
     });
 
     enhanceFieldRows();
     addHelpTooltips();
+    setupInputTabs();
+    setupThemeControls();
     setupDrawers();
     if (window.addEventListener) {
       window.addEventListener("afterprint", clearPrintMode);
+      window.addEventListener("beforeunload", flushAutosave);
     }
     renderSessionOptions();
     const keyFromUrl = sessionKeyFromUrl();
     if (keyFromUrl) {
       loadSessionState(keyFromUrl);
+      update({ save: false });
     } else {
       const loadedFromUrl = loadFromUrlParams();
       const loadedFromLegacyHash = loadedFromUrl ? false : loadFromHash();
       setActiveSessionKey(generateSessionKey());
+      update({ save: true, refreshLists: true, setStatus: false });
       if (loadedFromUrl || loadedFromLegacyHash) {
         setStorageStatus(`Imported inputs into session ${activeSessionKey}.`);
       } else {
         setStorageStatus(`Created session ${activeSessionKey}.`);
       }
     }
-    update();
   </script>
 </body>
 </html>
