@@ -1274,6 +1274,113 @@
       gap: 6px;
     }
 
+    .sensitivity-mobile {
+      display: none;
+      gap: 10px;
+    }
+
+    .sensitivity-summary-grid,
+    .sensitivity-mobile-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sensitivity-mobile-card {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .sensitivity-mobile-card.highlight {
+      background: #fffaf0;
+      border-color: #dcc9aa;
+      border-left: 4px solid var(--accent);
+    }
+
+    .sensitivity-mobile-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .sensitivity-mobile-title {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .sensitivity-mobile-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .sensitivity-mobile-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sensitivity-mobile-metric {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcff;
+    }
+
+    .sensitivity-mobile-metric strong {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .sensitivity-mobile-metric span {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .sensitivity-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sensitivity-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f7f9fc;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .sensitivity-pill.current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .sensitivity-pill.threshold {
+      border-color: #9fbea9;
+      background: #e7f2ea;
+      color: #183f27;
+    }
+
     .threshold-swatch {
       width: 12px;
       height: 12px;
@@ -1938,6 +2045,18 @@
         right: 10px;
         bottom: 10px;
         max-width: calc(100vw - 20px);
+      }
+
+      .sensitivity-mobile {
+        display: grid;
+      }
+
+      .sensitivity-desktop {
+        display: none;
+      }
+
+      .sensitivity-mobile-metrics {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -2676,34 +2795,37 @@
               <span><span class="threshold-swatch"></span>First rate where additional-rate taxable income reaches zero</span>
               <span><span class="threshold-swatch"></span>First rate where full Personal Allowance is restored</span>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th class="num" rowspan="2">Pension</th>
-                  <th class="group-head" colspan="4">Take-Home</th>
-                  <th class="group-head" colspan="2">Taxable Income</th>
-                  <th class="num" rowspan="2">Personal Allowance</th>
-                  <th class="group-head" colspan="2">Basic Rate Band</th>
-                  <th class="group-head" colspan="2">Higher Rate Band</th>
-                  <th class="group-head" colspan="2">Additional Rate Band</th>
-                </tr>
-                <tr class="subhead">
-                  <th class="num">Salary annual</th>
-                  <th class="num">Salary monthly</th>
-                  <th class="num">Annual incl. RSU</th>
-                  <th class="num">Cash take-home %</th>
-                  <th class="num">Stock taxable</th>
-                  <th class="num">Total incl. stock</th>
-                  <th class="num">Taxable</th>
-                  <th class="num">Tax</th>
-                  <th class="num">Taxable</th>
-                  <th class="num">Tax</th>
-                  <th class="num">Taxable</th>
-                  <th class="num">Tax</th>
-                </tr>
-              </thead>
-              <tbody id="pensionSensitivity"></tbody>
-            </table>
+            <div id="pensionSensitivityMobile" class="sensitivity-mobile" aria-label="Pension sensitivity mobile view"></div>
+            <div class="sensitivity-desktop">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="num" rowspan="2">Pension</th>
+                    <th class="group-head" colspan="4">Take-Home</th>
+                    <th class="group-head" colspan="2">Taxable Income</th>
+                    <th class="num" rowspan="2">Personal Allowance</th>
+                    <th class="group-head" colspan="2">Basic Rate Band</th>
+                    <th class="group-head" colspan="2">Higher Rate Band</th>
+                    <th class="group-head" colspan="2">Additional Rate Band</th>
+                  </tr>
+                  <tr class="subhead">
+                    <th class="num">Salary annual</th>
+                    <th class="num">Salary monthly</th>
+                    <th class="num">Annual incl. RSU</th>
+                    <th class="num">Cash take-home %</th>
+                    <th class="num">Stock taxable</th>
+                    <th class="num">Total incl. stock</th>
+                    <th class="num">Taxable</th>
+                    <th class="num">Tax</th>
+                    <th class="num">Taxable</th>
+                    <th class="num">Tax</th>
+                    <th class="num">Taxable</th>
+                    <th class="num">Tax</th>
+                  </tr>
+                </thead>
+                <tbody id="pensionSensitivity"></tbody>
+              </table>
+            </div>
           </div>
 
           <div class="subsection">
@@ -3240,6 +3362,7 @@
       });
       const additionalClearedIndex = scenarios.findIndex(({ result }) => result.stockTax.additional <= 0.005);
       const allowanceRestoredIndex = scenarios.findIndex(({ result }) => result.stockTax.personalAllowance >= tax.personalAllowance - 0.005);
+
       document.getElementById("pensionSensitivity").innerHTML = scenarios.map(({ pctValue, isCurrent, result }, index) => {
         const additionalCleared = index === additionalClearedIndex;
         const allowanceRestored = index === allowanceRestoredIndex;
@@ -3265,6 +3388,107 @@
           td(money(result.stockTax.additional * tax.additionalRate), additionalCleared ? "num threshold-hit" : "num")
         ], rowClasses);
       }).join("");
+
+      const currentScenario = scenarios.find(({ isCurrent }) => isCurrent) || scenarios[0];
+      const additionalScenario = additionalClearedIndex >= 0 ? scenarios[additionalClearedIndex] : null;
+      const allowanceScenario = allowanceRestoredIndex >= 0 ? scenarios[allowanceRestoredIndex] : null;
+      const mobileSummaryCards = [
+        {
+          title: "Current pension rate",
+          copy: "The calculator result at the pension rate entered above.",
+          scenario: currentScenario,
+          pills: currentScenario ? [{ label: "Current setting", className: "current" }] : [],
+          highlight: true
+        },
+        additionalScenario ? {
+          title: "Additional-rate band cleared",
+          copy: "First pension rate where additional-rate taxable income falls to zero.",
+          scenario: additionalScenario,
+          pills: [{ label: "Threshold reached", className: "threshold" }],
+          highlight: true
+        } : null,
+        allowanceScenario ? {
+          title: "Full Personal Allowance restored",
+          copy: "First pension rate where the full Personal Allowance is available again.",
+          scenario: allowanceScenario,
+          pills: [{ label: "Threshold reached", className: "threshold" }],
+          highlight: true
+        } : null
+      ].filter(Boolean);
+
+      const mobileListCards = scenarios.map(({ pctValue, isCurrent, result }, index) => {
+        const additionalCleared = index === additionalClearedIndex;
+        const allowanceRestored = index === allowanceRestoredIndex;
+        const pills = [];
+        if (isCurrent) pills.push('<span class="sensitivity-pill current">Current</span>');
+        if (additionalCleared) pills.push('<span class="sensitivity-pill threshold">Additional rate cleared</span>');
+        if (allowanceRestored) pills.push('<span class="sensitivity-pill threshold">Allowance restored</span>');
+        return `<div class="sensitivity-mobile-card${isCurrent || additionalCleared || allowanceRestored ? " highlight" : ""}">
+          <div class="sensitivity-mobile-head">
+            <div class="sensitivity-mobile-title">${pct(pctValue)} pension</div>
+            <div class="sensitivity-pill-row">${pills.join("")}</div>
+          </div>
+          <div class="sensitivity-mobile-metrics">
+            <div class="sensitivity-mobile-metric">
+              <strong>Salary monthly</strong>
+              <span>${money(result.salaryTakeHome / 12)}</span>
+            </div>
+            <div class="sensitivity-mobile-metric">
+              <strong>Annual incl. RSU</strong>
+              <span>${money(result.withRsuAnnual)}</span>
+            </div>
+            <div class="sensitivity-mobile-metric">
+              <strong>Personal Allowance</strong>
+              <span>${money(result.stockTax.personalAllowance)}</span>
+            </div>
+            <div class="sensitivity-mobile-metric">
+              <strong>Additional-rate taxable</strong>
+              <span>${money(result.stockTax.additional)}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("pensionSensitivityMobile").innerHTML = `
+        <div class="sensitivity-summary-grid">
+          ${mobileSummaryCards.map(({ title, copy, scenario, pills, highlight }) => {
+            if (!scenario) return "";
+            const result = scenario.result;
+            const pillHtml = pills.map((pill) => `<span class="sensitivity-pill ${pill.className}">${pill.label}</span>`).join("");
+            return `<div class="sensitivity-mobile-card${highlight ? " highlight" : ""}">
+              <div class="sensitivity-mobile-head">
+                <div class="sensitivity-mobile-title">${title}</div>
+                <div class="sensitivity-pill-row">${pillHtml}</div>
+              </div>
+              <div class="sensitivity-mobile-copy">${copy}</div>
+              <div class="sensitivity-mobile-metrics">
+                <div class="sensitivity-mobile-metric">
+                  <strong>Pension rate</strong>
+                  <span>${pct(scenario.pctValue)}</span>
+                </div>
+                <div class="sensitivity-mobile-metric">
+                  <strong>Salary monthly</strong>
+                  <span>${money(result.salaryTakeHome / 12)}</span>
+                </div>
+                <div class="sensitivity-mobile-metric">
+                  <strong>Annual incl. RSU</strong>
+                  <span>${money(result.withRsuAnnual)}</span>
+                </div>
+                <div class="sensitivity-mobile-metric">
+                  <strong>Personal Allowance</strong>
+                  <span>${money(result.stockTax.personalAllowance)}</span>
+                </div>
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+        <details class="collapsible-view">
+          <summary>All Pension Rates</summary>
+          <div class="collapsible-body">
+            <div class="sensitivity-mobile-list">${mobileListCards}</div>
+          </div>
+        </details>
+      `;
     }
 
     function updatePensionSensitivity(data) {
@@ -3272,6 +3496,7 @@
       if (!data.showPensionSensitivity) {
         section.style.display = "none";
         document.getElementById("pensionSensitivity").innerHTML = "";
+        document.getElementById("pensionSensitivityMobile").innerHTML = "";
         return;
       }
       section.style.display = "";
