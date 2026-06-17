@@ -364,6 +364,56 @@
       line-height: 1.35;
     }
 
+    .tracking-choice-group {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      min-width: 0;
+    }
+
+    .tracking-choice {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .tracking-choice.is-active {
+      border-color: var(--primary);
+      background: var(--status-bg);
+    }
+
+    .tracking-choice input[type="radio"] {
+      margin: 2px 0 0;
+    }
+
+    .tracking-choice-copy {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .tracking-choice-title {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .tracking-choice-note,
+    .tracking-state {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
     .control-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -675,6 +725,32 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.4;
+    }
+
+    .input-option-block {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcff;
+    }
+
+    .input-option-head {
+      display: grid;
+      gap: 4px;
+    }
+
+    .input-option-title {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .input-option-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     .field-table {
@@ -1718,14 +1794,32 @@
         position: fixed;
         inset: 0 auto 0 0;
         z-index: 60;
+        display: flex;
+        flex-direction: column;
         width: min(94vw, 430px);
+        max-height: 100dvh;
         min-width: 0;
-        overflow-y: auto;
+        overflow: hidden;
         background: #fff;
         border-right: 1px solid var(--line);
         box-shadow: 18px 0 32px rgba(23, 32, 36, 0.22);
         transform: translateX(-100%);
         transition: transform 180ms ease;
+      }
+
+      .inputs-panel > .panel-title {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        flex: 0 0 auto;
+      }
+
+      .inputs-panel > .panel-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
       }
 
       .workspace-panel {
@@ -1773,6 +1867,11 @@
         gap: 6px;
         overflow-x: visible;
         border-bottom: 0;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        padding-top: 8px;
+        background: linear-gradient(to bottom, var(--paper) 0 82%, rgba(255, 255, 255, 0) 100%);
       }
 
       .input-tab {
@@ -1988,10 +2087,10 @@
           <div class="panel-body">
             <div class="workspace-sidebar" aria-label="Scenario workspace">
               <div class="workspace-sidebar-head">
-                <h3>Saved Sessions and Files</h3>
+                <h3>Settings and Sessions</h3>
                 <button id="open-history" class="secondary" type="button">History</button>
               </div>
-              <p class="section-copy">Keep local sessions, copy a portable share link, or move calculations in and out with JSON.</p>
+              <p class="section-copy">Manage theme, privacy preferences, and local session tools from here.</p>
               <div class="theme-switcher" aria-label="Theme selector">
                 <span class="theme-switcher-label">Theme</span>
                 <div class="theme-options" role="group" aria-label="Color theme">
@@ -2047,6 +2146,28 @@
                     <button id="clear-saved" class="secondary" type="button">Delete Session</button>
                   </div>
                 </section>
+                <section class="control-card tracking-card" aria-label="Usage insights preference">
+                  <div class="control-card-title">Usage insights</div>
+                  <div class="control-card-copy">Optional. This preference stays in this browser. The current implementation can load only a local script and does not send usage data to a third party.</div>
+                  <fieldset class="tracking-choice-group">
+                    <legend class="visually-hidden">Usage insights preference</legend>
+                    <label class="tracking-choice" data-tracking-choice="agree">
+                      <input id="trackingConsentAgree" type="radio" name="trackingConsent" value="agree" />
+                      <span class="tracking-choice-copy">
+                        <span class="tracking-choice-title">I agree with tracking all my use cases using custom tools, and without exporting any data to any thirdparty, purely to improve this tool.</span>
+                        <span class="tracking-choice-note">Loads a local JavaScript file in this browser only. No third-party analytics are connected in the current implementation.</span>
+                      </span>
+                    </label>
+                    <label class="tracking-choice" data-tracking-choice="decline">
+                      <input id="trackingConsentDecline" type="radio" name="trackingConsent" value="decline" />
+                      <span class="tracking-choice-copy">
+                        <span class="tracking-choice-title">I do not agree with sharing any sort of usage metrics with anyone.</span>
+                        <span class="tracking-choice-note">No usage-tracking script is loaded.</span>
+                      </span>
+                    </label>
+                  </fieldset>
+                  <div id="trackingConsentState" class="tracking-state">Current setting: no usage-tracking script loaded.</div>
+                </section>
               </div>
             </div>
           </div>
@@ -2076,6 +2197,26 @@
               <div class="input-section-head">
                 <h3>Cash Compensation and Pension</h3>
                 <p class="section-copy">Annual cash pay, payroll deductions, and pension treatment.</p>
+              </div>
+              <div class="input-option-block">
+                <div class="input-option-head">
+                  <div class="input-option-title">Payroll treatment and analysis</div>
+                  <div class="input-option-copy">These switches affect pension tax treatment and whether the pension sensitivity section is shown.</div>
+                </div>
+                <div class="toggles">
+                  <div class="check-row">
+                    <label for="showPensionSensitivity">Show pension sensitivity</label>
+                    <input id="showPensionSensitivity" type="checkbox" />
+                  </div>
+                  <div class="check-row">
+                    <label for="pensionReducesTax">Pension reduces taxable pay</label>
+                    <input id="pensionReducesTax" type="checkbox" checked />
+                  </div>
+                  <div class="check-row">
+                    <label for="pensionReducesNI">Pension reduces NI-able pay</label>
+                    <input id="pensionReducesNI" type="checkbox" checked />
+                  </div>
+                </div>
               </div>
               <div class="field-table">
                 <div class="field-table-head">
@@ -2126,20 +2267,6 @@
                   <label for="studentLoanDeductions">Student loan / payroll deductions</label>
                   <input id="studentLoanDeductions" type="number" value="0" step="100" />
                   <span class="unit">GBP annual</span>
-                </div>
-              </div>
-              <div class="toggles">
-                <div class="check-row">
-                  <label for="pensionReducesTax">Pension reduces taxable pay</label>
-                  <input id="pensionReducesTax" type="checkbox" checked />
-                </div>
-                <div class="check-row">
-                  <label for="pensionReducesNI">Pension reduces NI-able pay</label>
-                  <input id="pensionReducesNI" type="checkbox" checked />
-                </div>
-                <div class="check-row">
-                  <label for="showPensionSensitivity">Show pension sensitivity</label>
-                  <input id="showPensionSensitivity" type="checkbox" />
                 </div>
               </div>
             </section>
@@ -2663,6 +2790,8 @@
     const sessionIndexKey = "ukTakeHomePayCalculator.sessionKeys.v1";
     const sessionPayloadPrefix = "ukTakeHomePayCalculator.session.";
     const themeStorageKey = "ukTakeHomePayCalculator.theme.v1";
+    const trackingConsentStorageKey = "ukTakeHomePayCalculator.trackingConsent.v1";
+    const usageTrackingScriptId = "ukTakeHomePayCalculatorUsageTracking";
     const exportFormatVersion = 1;
     const maxSessionKeys = 10;
     let activeSessionKey = "";
@@ -2670,6 +2799,7 @@
     let updateFrameId = 0;
     let autosaveTimerId = 0;
     let storageStatusTimerId = 0;
+    let usageTrackingLoadPromise = null;
 
     const defaultInputValues = {
       baseSalary: 35000,
@@ -3919,6 +4049,74 @@
       return ["primary", "mono", "market"].includes(normalized) ? normalized : "primary";
     }
 
+    function normalizeTrackingConsent(value) {
+      return String(value || "").toLowerCase() === "agree" ? "agree" : "decline";
+    }
+
+    function trackingConsentMessage(consent) {
+      return consent === "agree"
+        ? "Current setting: local usage-tracking script enabled in this browser."
+        : "Current setting: no usage-tracking script loaded.";
+    }
+
+    function storedTrackingConsent() {
+      const store = safeLocalStore();
+      if (!store) return "decline";
+      try {
+        return normalizeTrackingConsent(store.getItem(trackingConsentStorageKey));
+      } catch {
+        return "decline";
+      }
+    }
+
+    function updateTrackingChoiceUi(consent) {
+      const normalized = normalizeTrackingConsent(consent);
+      document.querySelectorAll("[data-tracking-choice]").forEach((option) => {
+        const input = option.querySelector('input[name="trackingConsent"]');
+        const active = input?.value === normalized;
+        option.classList.toggle("is-active", active);
+        if (input) input.checked = active;
+      });
+      const state = document.getElementById("trackingConsentState");
+      if (state) state.textContent = trackingConsentMessage(normalized);
+    }
+
+    function setTrackingEnabled(enabled) {
+      if (window.ukTakeHomeUsageTracking && typeof window.ukTakeHomeUsageTracking.setEnabled === "function") {
+        window.ukTakeHomeUsageTracking.setEnabled(enabled);
+      }
+    }
+
+    function loadUsageTrackingScript() {
+      if (window.ukTakeHomeUsageTracking) {
+        setTrackingEnabled(true);
+        return Promise.resolve(window.ukTakeHomeUsageTracking);
+      }
+      if (usageTrackingLoadPromise) return usageTrackingLoadPromise;
+      usageTrackingLoadPromise = new Promise((resolve, reject) => {
+        const existing = document.getElementById(usageTrackingScriptId);
+        if (existing) {
+          existing.addEventListener("load", () => resolve(window.ukTakeHomeUsageTracking || null), { once: true });
+          existing.addEventListener("error", () => reject(new Error("Could not load the local usage-tracking script.")), { once: true });
+          return;
+        }
+        const script = document.createElement("script");
+        script.id = usageTrackingScriptId;
+        script.src = "usage-tracking-local.js";
+        script.async = true;
+        script.onload = () => {
+          setTrackingEnabled(true);
+          resolve(window.ukTakeHomeUsageTracking || null);
+        };
+        script.onerror = () => {
+          usageTrackingLoadPromise = null;
+          reject(new Error("Could not load the local usage-tracking script."));
+        };
+        document.head.appendChild(script);
+      });
+      return usageTrackingLoadPromise;
+    }
+
     function themeColor(theme) {
       return {
         primary: "#1d4ed8",
@@ -3959,6 +4157,54 @@
       document.querySelectorAll("[data-theme-value]").forEach((button) => {
         button.addEventListener("click", () => applyTheme(button.getAttribute("data-theme-value")));
       });
+    }
+
+    async function applyTrackingConsent(value, persist = true, announce = true) {
+      const normalized = normalizeTrackingConsent(value);
+      updateTrackingChoiceUi(normalized);
+      if (persist) {
+        const store = safeLocalStore();
+        if (store) {
+          try {
+            store.setItem(trackingConsentStorageKey, normalized);
+          } catch {
+            // Ignore tracking preference persistence failures.
+          }
+        }
+      }
+      if (normalized === "agree") {
+        try {
+          await loadUsageTrackingScript();
+          setTrackingEnabled(true);
+          if (announce) setStorageStatus("Local usage tracking enabled for this browser.");
+        } catch (error) {
+          updateTrackingChoiceUi("decline");
+          if (announce) setStorageStatus(error?.message || "Could not load the local usage-tracking script.");
+        }
+        return;
+      }
+      setTrackingEnabled(false);
+      if (announce) setStorageStatus("Usage tracking disabled for this browser.");
+    }
+
+    function setupTrackingControls() {
+      updateTrackingChoiceUi(storedTrackingConsent());
+      document.querySelectorAll('input[name="trackingConsent"]').forEach((input) => {
+        input.addEventListener("change", (event) => {
+          applyTrackingConsent(event.target.value);
+        });
+      });
+      const initialConsent = storedTrackingConsent();
+      if (initialConsent === "agree") {
+        loadUsageTrackingScript()
+          .then(() => {
+            setTrackingEnabled(true);
+            updateTrackingChoiceUi("agree");
+          })
+          .catch(() => {
+            updateTrackingChoiceUi("decline");
+          });
+      }
     }
 
     function activateInputTab(tabName) {
@@ -4663,6 +4909,7 @@
     addHelpTooltips();
     setupInputTabs();
     setupThemeControls();
+    setupTrackingControls();
     setupDrawers();
     if (window.addEventListener) {
       window.addEventListener("afterprint", clearPrintMode);

@@ -17,6 +17,7 @@ https://allupaku.github.io/uk-take-home-pay-calculator/
 - Session keys for saving multiple calculation scenarios locally in browser session storage
 - Portable share links plus JSON export and import for saved calculations
 - Theme switching with primary, mono, and market color variants
+- Optional local-only usage-tracking preference with explicit user consent
 - Session settings drawer with scenario summaries and a clear-all-sessions option
 - Printable annual summary with calculation notes, per-month payslip statements from cashflow rows, and HMRC-oriented reconciliation guide
 
@@ -24,7 +25,7 @@ https://allupaku.github.io/uk-take-home-pay-calculator/
 
 This is a personal side project with no advertising and no profit motive.
 
-The calculator does not collect data and does not submit your salary, pension, benefits, RSU, ESPP, or tax inputs to a server. Session data is stored in your own browser `sessionStorage` so a generated key can reload that scenario in the same browser session. Theme preference is stored locally in browser `localStorage`.
+The calculator does not collect data and does not submit your salary, pension, benefits, RSU, ESPP, or tax inputs to a server. Session data is stored in your own browser `sessionStorage` so a generated key can reload that scenario in the same browser session. Theme preference and the optional usage-tracking consent preference are stored locally in browser `localStorage`.
 
 ## Disclaimer
 
